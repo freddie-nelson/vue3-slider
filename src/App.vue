@@ -16,6 +16,20 @@ export default defineComponent({
 
 <style>
 body {
-  background-color: #0b0a13;
+  background-color: #080A0D;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7%;
+  box-sizing: border-box;
 }
 </style>

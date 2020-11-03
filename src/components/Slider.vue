@@ -23,16 +23,28 @@ export default defineComponent({
     },
     color: {
       type: String,
-      default: "red",
+      default: "#FB2727",
+    },
+    trackColor: {
+      type: String,
+      default: "#F1F6F8"
     }
   }
 });
 </script>
 
-<style lang="scss" scoped vars="{ width, height, color }">
+<style lang="scss" scoped vars="{ width, height, color, 'track-color': trackColor }">
 #slider {
+  box-sizing: border-box;
   width: var(--width);
   height: var(--height);
-  border-radius: calc(var(--height) / 2);
+
+  .track {
+    background-color: var(--track-color);
+    opacity: 0.1;
+    width: 100%;
+    height: 100%;
+    border-radius: calc(var(--height) / 2);
+  }
 }
 </style>
