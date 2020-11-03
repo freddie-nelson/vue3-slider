@@ -1,31 +1,53 @@
 <template>
-  <div id="slider" ref="slider">
-    <div class="track"></div>
-    <div class="track-filled"></div>
+  <div 
+    id="slider" 
+    @resize="filledWidth" 
+    ref="slider"
+  >
+    <div class="track" />
+    <div 
+      class="track-filled" 
+      :style="{ width: filledWidth + 'px' }"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import props from "./props";
 
 export default defineComponent({
   name: "Slider",
   props,
   setup(props, { emit }) {
-    const slider = ref<HTMLDivElement>();
+    const slider = ref();
 
-    const filledWidth = computed(() => {
-      if (!slider.value) return;
+    // CHANGING FILLED WIDTH -----
+    const filledWidth = ref(0);
 
-      const pixelsPerStep = slider.value.clientWidth / props.max;
-      
-      return props.modelValue * pixelsPerStep;
-    })
+    const getNewFilledWidth = (): number => {
+        if (!slider.value) return 0;
+
+        const pixelsPerStep = slider.value.clientWidth / props.max;
+        return props.modelValue * pixelsPerStep;
+    }
+
+    const initObserver = () => {
+      const observer = new ResizeObserver(() => {
+        filledWidth.value = getNewFilledWidth();
+      });
+
+      observer.observe(slider.value)
+    }
 
     const updateModelValue = (val: number): void => {
       emit("update:modelValue", val);
     }
+
+    onMounted(() => {
+      console.log("< Slider Mounted >")
+      initObserver()
+    })
 
     return {
       updateModelValue,
@@ -59,6 +81,7 @@ export default defineComponent({
     top: 0;
     width: auto;
     background-color: var(--color);
+    opacity: 1;
   }
 }
 </style>
