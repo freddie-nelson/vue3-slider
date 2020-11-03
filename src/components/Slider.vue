@@ -7,47 +7,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import validateLength from "./utils/validateLength";
+import props from "./props";
 
 export default defineComponent({
   name: "Slider",
-  props: {
-    width: {
-      type: String,
-      default: "100%",
-      validator: validateLength
-    },
-    height: {
-      type: String,
-      default: "6px",
-      validator: validateLength
-    },
-    color: {
-      type: String,
-      default: "#FB2727",
-    },
-    trackColor: {
-      type: String,
-      default: "#F1F6F8"
-    },
-    max: {
-      type: Number,
-      default: 100,
-      required: true
-    },
-    min: {
-      type: Number,
-      default: 0,
-      required: true
-    },
-    step: {
-      type: Number,
-      default: 1,
-      required: true
+  props,
+  methods: {
+    updateModelValue(val: number): void {
+      this.$emit("update:modelValue", val);
     }
-  },
-  setup() {
-    
   }
 });
 </script>
