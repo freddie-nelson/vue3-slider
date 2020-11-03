@@ -1,11 +1,12 @@
 <template>
   <div id="slider">
     <div class="track"></div>
+    <div class="track-filled"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import validateLength from "./utils/validateLength";
 
 export default defineComponent({
@@ -28,7 +29,25 @@ export default defineComponent({
     trackColor: {
       type: String,
       default: "#F1F6F8"
+    },
+    max: {
+      type: Number,
+      default: 100,
+      required: true
+    },
+    min: {
+      type: Number,
+      default: 0,
+      required: true
+    },
+    step: {
+      type: Number,
+      default: 1,
+      required: true
     }
+  },
+  setup() {
+    
   }
 });
 </script>
@@ -38,6 +57,7 @@ export default defineComponent({
   box-sizing: border-box;
   width: var(--width);
   height: var(--height);
+  position: relative;
 
   .track {
     background-color: var(--track-color);
@@ -45,6 +65,16 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     border-radius: calc(var(--height) / 2);
+  }
+
+  .track-filled {
+    @extend .track;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: auto;
+    background-color: var(--color);
   }
 }
 </style>
