@@ -1,22 +1,21 @@
 <template>
-  <h1>vue3-slider</h1>
+  <Slider />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Slider from "./components/Slider.vue";
 
 export default defineComponent({
-  name: "App"
+  name: "App",
+  components: {
+    Slider
+  }
 });
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  background-color: #0b0a13;
 }
 </style>
