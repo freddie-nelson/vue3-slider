@@ -1,20 +1,36 @@
 <template>
-  <div id="slider">
+  <div id="slider" ref="slider">
     <div class="track"></div>
     <div class="track-filled"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import props from "./props";
 
 export default defineComponent({
   name: "Slider",
   props,
-  methods: {
-    updateModelValue(val: number): void {
-      this.$emit("update:modelValue", val);
+  setup(props, { emit }) {
+    const slider = ref<HTMLDivElement>();
+
+    const filledWidth = computed(() => {
+      if (!slider.value) return;
+
+      const pixelsPerStep = slider.value.clientWidth / props.max;
+      
+      return props.modelValue * pixelsPerStep;
+    })
+
+    const updateModelValue = (val: number): void => {
+      emit("update:modelValue", val);
+    }
+
+    return {
+      updateModelValue,
+      filledWidth,
+      slider
     }
   }
 });

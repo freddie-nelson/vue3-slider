@@ -36,6 +36,7 @@ export default {
   },
   modelValue: {
     type: Number,
+    default: 50,
     required: true
   }
 }
