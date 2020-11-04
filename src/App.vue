@@ -1,5 +1,5 @@
 <template>
-  <Slider />
+  <Slider v-model="sliderVal" :step="5" :min="0" :max="100" />
 </template>
 
 <script lang="ts">
@@ -10,6 +10,11 @@ export default defineComponent({
   name: "App",
   components: {
     Slider
+  },
+  data() {
+    return {
+      sliderVal: 0
+    }
   }
 });
 </script>

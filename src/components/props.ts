@@ -7,9 +7,8 @@ export default {
     validator: validateLength
   },
   height: {
-    type: String,
-    default: "6px",
-    validator: validateLength
+    type: Number,
+    default: 6
   },
   color: {
     type: String,
