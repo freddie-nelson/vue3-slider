@@ -1,24 +1,62 @@
-# vue3-slider
+# 🔥 Vue 3 Slider 🔥
 
-## Project setup
-```
-yarn install
+## Table of Contents 📰
+
+* [Demo](#demo)
+* [Installation](#installation)
+* [Getting Started](#getting-started)
+  * [Import Component](#import-component)
+  * [How to use](#how-to-use)
+* [License](#license)
+* [Contact](#contact)
+
+## Demo
+
+Coming soon
+
+## Installation 
+```js
+# npm
+npm install vue3-slider
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
+```js
+# yarn 
+yarn add vue3-slider
 ```
 
-### Lints and fixes files
-```
-yarn lint
+## Getting Started 👍
+
+### Import component
+```js
+import slider from "vue3-slider"
+
+export default {
+  ...
+  components: {
+    "vue3-slider": slider
+  }
+  ...
+}
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### How to use
+```html
+<vue3-slider
+  v-model="myNumber"
+  color="#FB278D"
+  track-color="#FEFEFE"
+>
+```
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
+
+Copyright © 2020 - Present, Freddie Nelson
+
+## Contact
+
+* [Send me an email 📧](mailto:freddie0208@hotmail.com)
+* [DM me through twitter](https://twitter.com/freddie_dev)
+* [Contact me through my website](https://freddienelson.co.uk)
