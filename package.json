@@ -19,7 +19,7 @@
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "build:demo": "vue-cli-service build dev/serve.ts --output demo/"
+    "build:demo": "vue-cli-service build dev/serve.ts --dest demo/"
   },
   "dependencies": {},
   "devDependencies": {
