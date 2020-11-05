@@ -7,6 +7,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
+import typescript from 'rollup-plugin-typescript';
 import PostCSS from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 import scss from 'rollup-plugin-scss';
@@ -95,6 +96,8 @@ if (!argv.format || argv.format === 'es') {
       ...baseConfig.plugins.preVue,
       vue(baseConfig.plugins.vue),
       ...baseConfig.plugins.postVue,
+      scss(),
+      typescript(),
       babel({
         ...baseConfig.plugins.babel,
         presets: [
@@ -127,10 +130,15 @@ if (!argv.format || argv.format === 'cjs') {
     plugins: [
       replace(baseConfig.plugins.replace),
       ...baseConfig.plugins.preVue,
-      vue(baseConfig.plugins.vue),
+      vue({
+        templatePreprocessOptions: {
+          optimizeSSR: true
+        }
+      }),
       ...baseConfig.plugins.postVue,
       babel(baseConfig.plugins.babel),
       commonjs(),
+      typescript(),
       scss()
     ],
   };
@@ -155,6 +163,8 @@ if (!argv.format || argv.format === 'iife') {
       vue(baseConfig.plugins.vue),
       ...baseConfig.plugins.postVue,
       babel(baseConfig.plugins.babel),
+      typescript(),
+      scss(),
       commonjs(),
       terser({
         output: {
