@@ -16,10 +16,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="app">
-    <vue3-slider v-model="sliderVal" />
-    <h1>{{ sliderVal }}</h1>
-  </div>
+  <vue3-slider v-model="sliderVal" />
+  <h1>{{ sliderVal }}</h1>
 </template>
 
 <style>
