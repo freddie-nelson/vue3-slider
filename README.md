@@ -12,7 +12,7 @@
 
 ## Demo
 
-![Demo](demo.gif)
+![Demo](https://raw.githubusercontent.com/freddie-nelson/vue3-slider/main/demo.gif)
 
 ## Installation 
 ```js
