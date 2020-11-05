@@ -1,7 +1,12 @@
 {
   "name": "vue3-slider",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "dist/vue3-slider.common.js",
+  "module": "dist/vue3-slider.esm.js",
+  "unpkg": "dist/vue3-slider.min.js",
+  "browser": {
+    "./sfc": "src/components/Slider.vue"
+  },
   "files": [
     "dist/*",
     "src/*",
