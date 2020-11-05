@@ -43,7 +43,7 @@ export default {
   },
   modelValue: {
     type: Number,
-    default: 50,
+    default: 0,
     required: true
   }
 }

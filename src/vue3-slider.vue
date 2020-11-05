@@ -31,6 +31,8 @@ export default defineComponent({
     const slider = ref();
     const modelValueUnrounded = ref(props.modelValue);
 
+    emit("update:modelValue", props.min)
+
     // validate min and max
     if (props.max <= props.min) {
       console.error("[Vue3Slider] Error: Max value cannot be less than or equal to the min value. This will cause unexpected errors to occur, please fix.");
