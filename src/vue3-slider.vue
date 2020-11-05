@@ -14,7 +14,7 @@
     />
     <div 
       class="handle"
-      :style="{ left: filledWidth - (height + 7) / 2 + 'px' }"
+      :style="{ left: filledWidth - height + 'px' }"
       :class="{ hover: applyHandleHoverClass }"
     />
   </div>
