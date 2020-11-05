@@ -12,7 +12,7 @@
 
 ## Demo
 
-Coming soon
+![Demo](demo.gif)
 
 ## Installation 
 ```js

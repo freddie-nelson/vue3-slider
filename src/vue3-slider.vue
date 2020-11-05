@@ -25,7 +25,7 @@ import { defineComponent, ref, watchEffect, computed, onMounted } from "vue";
 import props from "./props";
 
 export default defineComponent({
-  name: "Slider",
+  name: "vue3-slider",
   props,
   setup(props, { emit }) {
     const slider = ref();
