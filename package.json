@@ -27,7 +27,7 @@
   "sideEffects": false,
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
-    "build": "yarn build:ssr && yarn build:es && yarn build:unpkg",
+    "build": "yarn build:ssr && yarn build:es && yarn build:unpkg && node build/fix-css.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
