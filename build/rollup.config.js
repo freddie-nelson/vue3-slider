@@ -9,6 +9,7 @@ import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import PostCSS from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
+import scss from 'rollup-plugin-scss';
 import minimist from 'minimist';
 
 // Get browserslist config and remove ie from es build targets
@@ -130,6 +131,7 @@ if (!argv.format || argv.format === 'cjs') {
       ...baseConfig.plugins.postVue,
       babel(baseConfig.plugins.babel),
       commonjs(),
+      scss()
     ],
   };
   buildFormats.push(umdConfig);

@@ -9,6 +9,7 @@
         "noUnusedParameters": true,
         "importHelpers": true,
         "moduleResolution": "node",
+        "allowJs": true,
         "experimentalDecorators": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
