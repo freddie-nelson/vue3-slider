@@ -16,12 +16,12 @@
 
 ## Installation 
 ```js
-# npm
+// with npm
 npm install vue3-slider
 ```
 
 ```js
-# yarn 
+// with yarn 
 yarn add vue3-slider
 ```
 
@@ -30,6 +30,7 @@ yarn add vue3-slider
 ### Import component
 ```js
 import slider from "vue3-slider"
+import "vue3-slider/dist/vue3-slider.min.css"
 
 export default {
   ...
@@ -48,6 +49,19 @@ export default {
   track-color="#FEFEFE"
 >
 ```
+
+### Props
+| Name   	      | Type  	  | Required   	| Default  	| Rules   	|
+|---	          |---	      |---	        |---	      |---	      |
+| width  	      | String  	|   	        | 100%  	  | must be valid css length |
+| height  	    | Number  	|   	        | 6  	      |   	      |
+| color  	      | String  	|   	        | #FB2727  	| must be a valid hex, rgb, rgba or html color value         |
+| trackColor  	| String  	|   	        | #F1F6F8  	| ^^^  	      |
+| max  	        | Number   	| ✔️   	      | 100   	  | cannot be less than min   	      |
+| min  	        | Number  	| ✔️   	      | 0   	    | cannot be greater than max  	      |
+| step  	      | Number  	| ✔️  	      | 1  	      |   	      |
+| v-model  	| Number  	| ✔️  	      |   	      |   	      |
+
 
 ## License
 
