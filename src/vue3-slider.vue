@@ -1,22 +1,3 @@
-<template>
-  <div
-    id="slider"
-    @resize="filledWidth"
-    ref="slider"
-    @mousedown="startSlide"
-    @mouseenter="hovering = true"
-    @mouseleave="hovering = false"
-  >
-    <div class="track" />
-    <div class="track-filled" :style="{ width: filledWidth + 'px' }" />
-    <div
-      class="handle"
-      :style="{ left: filledWidth - (height + 6) / 2 + 'px' }"
-      :class="{ hover: applyHandleHoverClass }"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, ref, watchEffect, computed, onMounted } from "vue";
 import props from "./props";
@@ -160,6 +141,14 @@ export default defineComponent({
       initObserver();
     });
 
+    const vars = {
+      "--width": props.width,
+      "--height": props.height + "px",
+      "--color": props.color,
+      "--track-color": props.trackColor,
+      "--handle-size": props.height + 6 + "px",
+    };
+
     return {
       updateModelValue,
       filledWidth,
@@ -168,12 +157,33 @@ export default defineComponent({
       startSlide,
       applyHandleHoverClass,
       hovering,
+      vars,
     };
   },
 });
 </script>
 
-<style lang="scss" scoped vars="{ width, height: height + 'px', color, 'track-color': trackColor, 'handle-size': (height + 6) + 'px' }">
+<template>
+  <div
+    :style="{ ...vars }"
+    id="slider"
+    @resize="filledWidth"
+    ref="slider"
+    @mousedown="startSlide"
+    @mouseenter="hovering = true"
+    @mouseleave="hovering = false"
+  >
+    <div class="track" />
+    <div class="track-filled" :style="{ width: filledWidth + 'px' }" />
+    <div
+      class="handle"
+      :style="{ left: filledWidth - (height + 6) / 2 + 'px' }"
+      :class="{ hover: applyHandleHoverClass }"
+    />
+  </div>
+</template>
+
+<style lang="scss" scoped>
 #slider {
   box-sizing: border-box;
   width: var(--width, 100%);
