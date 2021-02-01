@@ -1,20 +1,17 @@
 <template>
-  <div 
-    id="slider" 
-    @resize="filledWidth" 
+  <div
+    id="slider"
+    @resize="filledWidth"
     ref="slider"
     @mousedown="startSlide"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
     <div class="track" />
-    <div 
-      class="track-filled" 
-      :style="{ width: filledWidth + 'px' }"
-    />
-    <div 
+    <div class="track-filled" :style="{ width: filledWidth + 'px' }" />
+    <div
       class="handle"
-      :style="{ left: filledWidth - height + 'px' }"
+      :style="{ left: filledWidth - (height + 6) / 2 + 'px' }"
       :class="{ hover: applyHandleHoverClass }"
     />
   </div>
@@ -31,13 +28,15 @@ export default defineComponent({
     const slider = ref();
     const modelValueUnrounded = ref(props.modelValue);
 
-    emit("update:modelValue", props.min)
+    emit("update:modelValue", props.min);
 
     // validate min and max
     if (props.max <= props.min) {
-      console.error("[Vue3Slider] Error: Max value cannot be less than or equal to the min value. This will cause unexpected errors to occur, please fix.");
+      console.error(
+        "[Vue3Slider] Error: Max value cannot be less than or equal to the min value. This will cause unexpected errors to occur, please fix."
+      );
     }
-    
+
     // Update model value functions
     const formatModelValue = (val: number): number => {
       const step = props.step;
@@ -59,14 +58,14 @@ export default defineComponent({
       } else {
         return roundedVal;
       }
-    }
+    };
 
     const updateModelValue = (val: number): void => {
       modelValueUnrounded.value = val;
       const formattedVal = formatModelValue(val);
 
       emit("update:modelValue", formattedVal);
-    }
+    };
 
     // Change filled width
     const filledWidth = ref(0);
@@ -77,7 +76,7 @@ export default defineComponent({
       let newMax = props.max;
 
       if (props.min < 0) {
-        newMax = props.max + props.min * - 1;
+        newMax = props.max + props.min * -1;
       }
 
       if (props.modelValue > newMax) {
@@ -88,15 +87,15 @@ export default defineComponent({
     });
 
     const getNewFilledWidth = (): number => {
-        if (!slider.value) return 0;
-        
-        pixelsPerStep.value = slider.value.clientWidth / maxFixed.value;
-        return modelValueUnrounded.value * pixelsPerStep.value;
-    }
+      if (!slider.value) return 0;
+
+      pixelsPerStep.value = slider.value.clientWidth / maxFixed.value;
+      return modelValueUnrounded.value * pixelsPerStep.value;
+    };
 
     watchEffect(() => {
       filledWidth.value = getNewFilledWidth();
-    })
+    });
 
     // start resize observer so that filled width is responsive
     const initObserver = () => {
@@ -104,35 +103,47 @@ export default defineComponent({
         filledWidth.value = getNewFilledWidth();
       });
 
-      observer.observe(slider.value)
-    }
+      observer.observe(slider.value);
+    };
 
     // Handle dragging slider
     const holding = ref(false);
 
-    const startSlide = (e: MouseEvent) => {
+    const startSlide = (e: MouseEvent | TouchEvent) => {
       holding.value = true;
+      e.preventDefault();
+
       const rect = slider.value.getBoundingClientRect();
-      updateModelValue((e.pageX - rect.x) / pixelsPerStep.value);
 
-      window.addEventListener("mouseup", () => {
-        if (holding.value) holding.value = false;
+      if (e.type === "touchstart") {
+        console.log("touch");
+      } else {
+        const mouseEvent = <MouseEvent>e;
 
-        window.onmouseup = null;
-        window.onmousemove = null;
-      })
+        updateModelValue((mouseEvent.pageX - rect.x) / pixelsPerStep.value);
 
-      window.addEventListener("mousemove", (e: MouseEvent) => {
-        if (holding.value) {
-          const rect = slider.value.getBoundingClientRect();
-          const mousePosInsideSlider = e.pageX - rect.x;
+        window.addEventListener("mouseup", () => {
+          if (holding.value) holding.value = false;
 
-          if (mousePosInsideSlider > 0 && mousePosInsideSlider <= slider.value.clientWidth) {
-            updateModelValue(mousePosInsideSlider / pixelsPerStep.value);
+          window.onmouseup = null;
+          window.onmousemove = null;
+        });
+
+        window.addEventListener("mousemove", (e: MouseEvent) => {
+          if (holding.value) {
+            const rect = slider.value.getBoundingClientRect();
+            const mousePosInsideSlider = e.pageX - rect.x;
+
+            if (
+              mousePosInsideSlider > 0 &&
+              mousePosInsideSlider <= slider.value.clientWidth
+            ) {
+              updateModelValue(mousePosInsideSlider / pixelsPerStep.value);
+            }
           }
-        }
-      })
-    }
+        });
+      }
+    };
 
     // Apply hover styles to handle
     const hovering = ref(false);
@@ -146,8 +157,8 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      initObserver()
-    })
+      initObserver();
+    });
 
     return {
       updateModelValue,
@@ -156,17 +167,17 @@ export default defineComponent({
       holding,
       startSlide,
       applyHandleHoverClass,
-      hovering
-    }
-  }
+      hovering,
+    };
+  },
 });
 </script>
 
 <style lang="scss" scoped vars="{ width, height: height + 'px', color, 'track-color': trackColor, 'handle-size': (height + 6) + 'px' }">
 #slider {
   box-sizing: border-box;
-  width: var(--width);
-  height: var(--height);
+  width: var(--width, 100%);
+  height: var(--height, 6px);
   position: relative;
   margin: 3px 0;
   cursor: pointer;
@@ -177,11 +188,11 @@ export default defineComponent({
   }
 
   .track {
-    background-color: var(--track-color);
+    background-color: var(--track-color, #f1f6f8);
     opacity: 0.1;
     width: 100%;
     height: 100%;
-    border-radius: calc(var(--height) / 2);
+    border-radius: calc(var(--height, 6px) / 2);
   }
 
   .track-filled {
@@ -191,19 +202,19 @@ export default defineComponent({
     left: 0;
     top: 0;
     width: auto;
-    background-color: var(--color);
+    background-color: var(--color, #fb2727);
     opacity: 1;
   }
 
   .handle {
     position: absolute;
     top: -3px;
-    width: var(--handle-size);
-    height: var(--handle-size);
-    border-radius: calc(var(--handle-size) / 2);
-    background-color: var(--color);
+    width: var(--handle-size, 12px);
+    height: var(--handle-size, 12px);
+    border-radius: calc(var(--handle-size, 12px) / 2);
+    background-color: var(--color, #fb2727);
     transform: scale(0);
-    transition: transform .2s ease;
+    transition: transform 0.2s ease;
     user-select: none;
 
     &.hover {
