@@ -1,22 +1,22 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Vue3Slider from '@/vue3-slider.vue';
+import { defineComponent } from "vue";
+import Vue3Slider from "@/vue3-slider.vue";
 
 export default defineComponent({
-  name: 'ServeDev',
+  name: "ServeDev",
   components: {
-    Vue3Slider
+    Vue3Slider,
   },
   data() {
     return {
-      sliderVal: 0
-    }
-  }
+      sliderVal: 0,
+    };
+  },
 });
 </script>
 
 <template>
-  <vue3-slider v-model="sliderVal" />
+  <vue3-slider class="slider" v-model="sliderVal" />
   <h1>{{ sliderVal }}</h1>
 </template>
 
@@ -24,14 +24,14 @@ export default defineComponent({
 body {
   width: 100%;
   height: 100vh;
-  background-color: #080A0D;
+  background-color: #080a0d;
   margin: 0;
   padding: 8%;
   box-sizing: border-box;
 }
 
 #app {
-  display: flex; 
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -41,10 +41,10 @@ body {
 
 h1 {
   color: rgba(255, 255, 255, 0.8);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#slider {
+.slider {
   animation: color-shift 12s linear infinite;
 }
 

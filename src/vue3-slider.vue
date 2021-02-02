@@ -166,7 +166,7 @@ export default defineComponent({
 <template>
   <div
     :style="{ ...vars }"
-    id="slider"
+    class="vue3-slider"
     @resize="filledWidth"
     ref="slider"
     @mousedown="startSlide"
@@ -183,8 +183,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss" scoped>
-#slider {
+<style lang="scss">
+.vue3-slider {
   box-sizing: border-box;
   width: var(--width, 100%);
   height: var(--height, 6px);
