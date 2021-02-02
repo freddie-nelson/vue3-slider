@@ -9,7 +9,12 @@ export default defineComponent({
     const slider = ref();
     const modelValueUnrounded = ref(props.modelValue);
 
-    emit("update:modelValue", props.min);
+    if (
+      modelValueUnrounded.value < props.min ||
+      modelValueUnrounded.value > props.max
+    ) {
+      console.error("[Vue3Slider] Error: value exceeds limits of slider");
+    }
 
     // validate min and max
     if (props.max <= props.min) {
