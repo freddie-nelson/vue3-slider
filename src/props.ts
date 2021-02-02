@@ -4,11 +4,11 @@ export default {
   width: {
     type: String,
     default: "100%",
-    validator: validateLength
+    validator: validateLength,
   },
   height: {
     type: Number,
-    default: 6
+    default: 6,
   },
   color: {
     type: String,
@@ -16,17 +16,17 @@ export default {
   },
   trackColor: {
     type: String,
-    default: "#F1F6F8"
+    default: "#f1f6f828",
   },
   max: {
     type: Number,
     default: 100,
-    required: true
+    required: true,
   },
   min: {
     type: Number,
     default: 0,
-    required: true
+    required: true,
   },
   step: {
     type: Number,
@@ -36,7 +36,7 @@ export default {
       if (val !== 0) {
         return true;
       } else {
-        console.error("[Vue3Slider] Error: Step cannot be 0")
+        console.error("[Vue3Slider] Error: Step cannot be 0");
         return false;
       }
     },
@@ -44,6 +44,6 @@ export default {
   modelValue: {
     type: Number,
     default: 0,
-    required: true
-  }
-}
+    required: true,
+  },
+};

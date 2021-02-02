@@ -97,7 +97,36 @@ export default defineComponent({
       const rect = slider.value.getBoundingClientRect();
 
       if (e.type === "touchstart") {
-        console.log("touch");
+        const touchEvent = <TouchEvent>e;
+
+        if (touchEvent.touches.length > 1) return;
+        const touch = touchEvent.touches[0];
+
+        updateModelValue((touch.pageX - rect.x) / pixelsPerStep.value);
+
+        window.addEventListener("touchend", () => {
+          if (holding.value) holding.value = false;
+
+          window.ontouchend = null;
+          window.ontouchmove = null;
+        });
+
+        window.addEventListener("touchmove", (e: TouchEvent) => {
+          if (holding.value) {
+            if (e.touches.length > 1) return;
+            const touch = e.touches[0];
+
+            const rect = slider.value.getBoundingClientRect();
+            const touchPosInsideSlider = touch.pageX - rect.x;
+
+            if (
+              touchPosInsideSlider > 0 &&
+              touchPosInsideSlider <= slider.value.clientWidth
+            ) {
+              updateModelValue(touchPosInsideSlider / pixelsPerStep.value);
+            }
+          }
+        });
       } else {
         const mouseEvent = <MouseEvent>e;
 
@@ -169,6 +198,7 @@ export default defineComponent({
     class="vue3-slider"
     @resize="filledWidth"
     ref="slider"
+    @touchstart="startSlide"
     @mousedown="startSlide"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
@@ -198,8 +228,7 @@ export default defineComponent({
   }
 
   .track {
-    background-color: var(--track-color, #f1f6f8);
-    opacity: 0.1;
+    background-color: var(--track-color, #f1f6f828);
     width: 100%;
     height: 100%;
     border-radius: calc(var(--height, 6px) / 2);
