@@ -41,6 +41,30 @@ export default {
       }
     },
   },
+  tooltip: {
+    type: Boolean,
+    default: false,
+  },
+  tooltipText: {
+    type: String,
+    default: "%v",
+    validator(val: string) {
+      if (!val.includes("%v")) {
+        console.error("[Vue3Slider] Error: tooltip text must contain %v");
+        return false;
+      }
+
+      return true;
+    },
+  },
+  tooltipColor: {
+    type: String,
+    default: "#FFFFFF",
+  },
+  tooltipTextColor: {
+    type: String,
+    default: "#000000",
+  },
   modelValue: {
     type: Number,
     default: 0,

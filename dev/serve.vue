@@ -9,14 +9,14 @@ export default defineComponent({
   },
   data() {
     return {
-      sliderVal: 0,
+      sliderVal: 10,
     };
   },
 });
 </script>
 
 <template>
-  <vue3-slider class="slider" v-model="sliderVal" />
+  <vue3-slider class="slider" tooltip v-model="sliderVal" />
   <h1>{{ sliderVal }}</h1>
 </template>
 
@@ -28,6 +28,7 @@ body {
   margin: 0;
   padding: 8%;
   box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #app {
@@ -41,11 +42,10 @@ body {
 
 h1 {
   color: rgba(255, 255, 255, 0.8);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .slider {
-  animation: color-shift 12s linear infinite;
+  /* animation: color-shift 12s linear infinite; */
 }
 
 @keyframes color-shift {

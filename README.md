@@ -18,14 +18,14 @@
 
 ## Installation
 
-```js
-// with npm
-npm install vue3-slider
+```bash
+# with npm
+npm install -D vue3-slider
 ```
 
-```js
-// with yarn
-yarn add vue3-slider
+```bash
+# with yarn
+yarn add --dev vue3-slider
 ```
 
 ## Getting Started 👍
@@ -34,7 +34,6 @@ yarn add vue3-slider
 
 ```js
 import slider from "vue3-slider"
-import "vue3-slider/dist/vue3-slider.min.css"
 
 export default {
   ...
@@ -48,21 +47,25 @@ export default {
 ### How to use
 
 ```html
-<vue3-slider v-model="myNumber" color="#FB278D" track-color="#FEFEFE"></vue3-slider>
+<vue3-slider v-model="myNumber" color="#FB278D" track-color="#FEFEFE" />
 ```
 
 ### Props
 
-| Name       | Type   | Required | Default | Rules                                              |
-| ---------- | ------ | -------- | ------- | -------------------------------------------------- |
-| width      | String |          | 100%    | must be valid css length                           |
-| height     | Number |          | 6       |                                                    |
-| color      | String |          | #FB2727 | must be a valid hex, rgb, rgba or html color value |
-| trackColor | String |          | #F1F6F8 | ^^^                                                |
-| max        | Number | ✔️       | 100     | cannot be less than min                            |
-| min        | Number | ✔️       | 0       | cannot be greater than max                         |
-| step       | Number | ✔️       | 1       |                                                    |
-| v-model    | Number | ✔️       |         |                                                    |
+| Name             | Type    | Required | Default | Rules                                                |
+| ---------------- | ------- | -------- | ------- | ---------------------------------------------------- |
+| v-model          | Number  | ✔️       |         |                                                      |
+| width            | String  |          | 100%    | must be valid css length                             |
+| height           | Number  |          | 6       |                                                      |
+| color            | String  |          | #FB2727 | must be a valid hex, rgb, rgba or html color value   |
+| trackColor       | String  |          | #F1F6F8 | ^^^                                                  |
+| max              | Number  |          | 100     | cannot be less than min                              |
+| min              | Number  |          | 0       | cannot be greater than max                           |
+| step             | Number  |          | 1       |                                                      |
+| tooltip          | Boolean |          | False   |                                                      |
+| tooltipText      | String  |          | "%v"    | must contain %v (%v is replaced with slider's value) |
+| tooltipColor     | String  |          | #FFFFFF | must be a valid hex, rgb, rgba or html color value   |
+| tooltipTextColor | String  |          | #000000 | ^^^                                                  |
 
 ## License
 

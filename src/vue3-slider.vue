@@ -8,6 +8,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const slider = ref();
     const modelValueUnrounded = ref(props.modelValue);
+    const formattedSliderValue = ref(0);
+
+    // correct value for ranges with a min that are < 0 or > 0
     if (props.min !== 0) modelValueUnrounded.value -= props.min;
 
     if (props.modelValue < props.min || props.modelValue > props.max) {
@@ -48,9 +51,9 @@ export default defineComponent({
 
     const updateModelValue = (val: number): void => {
       modelValueUnrounded.value = val;
-      const formattedVal = formatModelValue(val);
+      formattedSliderValue.value = formatModelValue(val);
 
-      emit("update:modelValue", formattedVal);
+      emit("update:modelValue", formattedSliderValue.value);
     };
 
     // Change filled width
@@ -73,16 +76,25 @@ export default defineComponent({
     const getNewFilledWidth = (): number => {
       if (!slider.value) return 0;
 
-      pixelsPerStep.value = slider.value.clientWidth / sliderRange;
+      const sliderWidth = slider.value.clientWidth;
+      pixelsPerStep.value = sliderWidth / sliderRange;
 
       // clamp value between 0 and the maximum width of the slider
-      return Math.max(
-        Math.min(
-          modelValueUnrounded.value * pixelsPerStep.value,
-          slider.value.clientWidth
-        ),
+      const clamped = Math.max(
+        Math.min(modelValueUnrounded.value * pixelsPerStep.value, sliderWidth),
         0
       );
+
+      // snap to limits
+      // if (clamped < pixelsPerStep.value /) {
+      //   return 0;
+      // } else if (sliderWidth - clamped < pixelsPerStep.value / 2) {
+      //   return sliderWidth;
+      // } else {
+      //   return clamped;
+      // }
+
+      return clamped;
     };
 
     watchEffect(() => {
@@ -177,9 +189,32 @@ export default defineComponent({
       }
     });
 
+    // tooltip setup
+    const tooltip = ref<HTMLDivElement>();
+
+    // replace %v with sliders value in tooltip text
+    const tooltipText = computed(() => {
+      const stringValue = (
+        formattedSliderValue.value || Math.floor(modelValueUnrounded.value)
+      ).toString();
+
+      return props.tooltipText.replace("%v", stringValue);
+    });
+
+    // calculate tooltip offset
+    const tooltipOffset = computed(() => {
+      let width = tooltip.value?.clientWidth;
+
+      // estimate width if it cant be found
+      if (!width) {
+        width = 14 + modelValueUnrounded.value.toString().length * 9;
+      }
+
+      return filledWidth.value - width / 2;
+    });
+
     onMounted(() => {
       initObserver();
-      // filledWidth.value = getNewFilledWidth(props.min);
     });
 
     const vars = {
@@ -188,6 +223,8 @@ export default defineComponent({
       "--color": props.color,
       "--track-color": props.trackColor,
       "--handle-size": props.height + 6 + "px",
+      "--tooltip-color": props.tooltipColor,
+      "--tooltip-text-color": props.tooltipTextColor,
     };
 
     return {
@@ -198,6 +235,9 @@ export default defineComponent({
       startSlide,
       applyHandleHoverClass,
       hovering,
+      tooltip,
+      tooltipText,
+      tooltipOffset,
       vars,
     };
   },
@@ -215,6 +255,17 @@ export default defineComponent({
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
+    <transition name="fade">
+      <div
+        class="tooltip"
+        ref="tooltip"
+        v-show="(tooltip && hovering) || holding"
+        :style="{ transform: `translate(${tooltipOffset}px)` }"
+      >
+        {{ tooltipText }}
+      </div>
+    </transition>
+
     <div class="track" />
     <div class="track-filled" :style="{ width: filledWidth + 'px' }" />
     <div
@@ -226,6 +277,15 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .vue3-slider {
   box-sizing: border-box;
   width: var(--width, 100%);
@@ -233,10 +293,24 @@ export default defineComponent({
   position: relative;
   margin: 3px 0;
   cursor: pointer;
+  font-family: inherit;
 
   & * {
     -webkit-user-drag: none;
     -webkit-app-region: no-drag;
+  }
+
+  .tooltip {
+    position: absolute;
+    left: 0;
+    top: -44px;
+    height: 25px;
+    background-color: var(--tooltip-color);
+    color: var(--tooltip-text-color);
+    font-family: inherit;
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-weight: bold;
   }
 
   .track {
