@@ -28,18 +28,19 @@
   },
   "license": "MIT",
   "private": false,
-  "main": "dist/vue3-slider.umd.min.js",
+  "main": "dist/vue3-slider.common.js",
   "types": "vue3-slider.d.ts",
   "files": [
     "dist/*",
     "vue3-slider.d.ts",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "*.json"
   ],
   "sideEffects": false,
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
-    "build": "vue-cli-service build --mode production --target lib --dest dist --name vue3-slider src/vue3-slider.vue",
-    "build:demo": "vue-cli-service build demo/demo.ts --dest docs/"
+    "build": "vue-cli-service build --mode production --target lib --name vue3-slider src/entry.ts",
+    "build:demo": "vue-cli-service build demo/demo.ts --dest dist/demo"
   },
   "dependencies": {},
   "devDependencies": {

@@ -1,11 +1,25 @@
-// iife/cjs usage extends esm default export - so import it all
-import component, * as namedExports from '@/entry.esm';
+import { App, DefineComponent, Plugin } from 'vue';
 
-// Attach named exports directly to component. IIFE/CJS will
-// only expose one global var, with named exports exposed as properties of
-// that global var (eg. plugin.namedExport)
-Object.entries(namedExports).forEach(([exportName, exported]) => {
-  if (exportName !== 'default') component[exportName] = exported;
-});
+// Import vue component
+import component from '@/vue3-slider.vue';
 
-export default component as typeof component & Exclude<typeof namedExports, 'default'>;
+// Define typescript interfaces for installable component
+type InstallableComponent = DefineComponent & { install: Exclude<Plugin['install'], undefined> };
+
+// Default export is installable instance of component.
+// IIFE injects install function into component, allowing component
+// to be registered via Vue.use() as well as Vue.component(),
+export default /*#__PURE__*/((): InstallableComponent => {
+  // Assign InstallableComponent type
+  const installable = component as unknown as InstallableComponent;
+
+  // Attach install function executed by Vue.use()
+  installable.install = (app: App) => {
+    app.component('Vue3Slider', installable);
+  };
+  return installable;
+})();
+
+// It's possible to expose named exports when writing components that can
+// also be used as directives, etc. - eg. import { RollupDemoDirective } from 'rollup-demo';
+// export const RollupDemoDirective = directive;
