@@ -1,8 +1,9 @@
 {
   "name": "vue3-slider",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "author": "Freddie Nelson <freddie0208@hotmail.com> (https://freddienelson.co.uk)",
   "description": "A modern, customizable slider built entirely in Vue.js 3 with TypeScript.",
+  "keywords": ["Vue", "Vue3", "VueJS", "slider", "component", "ui", "color"],
   "homepage": "https://github.com/freddie-nelson/vue3-slider",
   "repository": {
     "type": "git",
