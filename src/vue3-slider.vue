@@ -8,11 +8,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const slider = ref();
     const modelValueUnrounded = ref(props.modelValue);
+    if (props.min !== 0) modelValueUnrounded.value -= props.min;
 
-    if (
-      modelValueUnrounded.value < props.min ||
-      modelValueUnrounded.value > props.max
-    ) {
+    if (props.modelValue < props.min || props.modelValue > props.max) {
       console.error("[Vue3Slider] Error: value exceeds limits of slider");
     }
 
@@ -41,6 +39,8 @@ export default defineComponent({
       // if negative min return fixed value
       if (props.min < 0) {
         return roundedVal + props.min;
+      } else if (props.min > 0) {
+        return roundedVal + props.min;
       } else {
         return roundedVal;
       }
@@ -57,26 +57,32 @@ export default defineComponent({
     const filledWidth = ref(0);
     const pixelsPerStep = ref(1);
 
-    // fix max incase negative range
-    const maxFixed = computed(() => {
-      let newMax = props.max;
+    // calculate slider range
+    const sliderRange = (() => {
+      let range = 0;
 
       if (props.min < 0) {
-        newMax = props.max + props.min * -1;
+        range = props.max + props.min * -1;
+      } else {
+        range = props.max - props.min;
       }
 
-      if (props.modelValue > newMax) {
-        updateModelValue(newMax);
-      }
-
-      return newMax;
-    });
+      return range;
+    })();
 
     const getNewFilledWidth = (): number => {
       if (!slider.value) return 0;
 
-      pixelsPerStep.value = slider.value.clientWidth / maxFixed.value;
-      return modelValueUnrounded.value * pixelsPerStep.value;
+      pixelsPerStep.value = slider.value.clientWidth / sliderRange;
+
+      // clamp value between 0 and the maximum width of the slider
+      return Math.max(
+        Math.min(
+          modelValueUnrounded.value * pixelsPerStep.value,
+          slider.value.clientWidth
+        ),
+        0
+      );
     };
 
     watchEffect(() => {
@@ -173,6 +179,7 @@ export default defineComponent({
 
     onMounted(() => {
       initObserver();
+      // filledWidth.value = getNewFilledWidth(props.min);
     });
 
     const vars = {
