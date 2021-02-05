@@ -1,6 +1,6 @@
 {
   "name": "vue3-slider",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "author": "Freddie Nelson <freddie0208@hotmail.com> (https://freddienelson.co.uk)",
   "description": "A modern, customizable slider built entirely in Vue.js 3 with TypeScript in under 3KB (gzipped) and dependency free.",
   "keywords": [
@@ -14,8 +14,7 @@
     "color",
     "typescript",
     "no dependencies",
-    "0 dependencies",
-    "3KB"
+    "0 dependencies"
   ],
   "homepage": "https://github.com/freddie-nelson/vue3-slider",
   "repository": {
@@ -36,7 +35,6 @@
     "src/**/*.vue",
     "*.json"
   ],
-  "sideEffects": false,
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
     "build": "vue-cli-service build --mode production --target lib --name vue3-slider src/entry.ts",
