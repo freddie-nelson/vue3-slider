@@ -235,6 +235,7 @@ export default defineComponent({
       startSlide,
       applyHandleHoverClass,
       hovering,
+      showTooltip: props.tooltip,
       tooltip,
       tooltipText,
       tooltipOffset,
@@ -259,7 +260,7 @@ export default defineComponent({
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="tooltip && (hovering || holding)"
+        v-show="showTooltip && (hovering || holding)"
         :style="{ transform: `translate(${tooltipOffset}px)` }"
       >
         {{ tooltipText }}
