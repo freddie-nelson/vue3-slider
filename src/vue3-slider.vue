@@ -259,7 +259,7 @@ export default defineComponent({
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="(tooltip && hovering) || holding"
+        v-show="tooltip && (hovering || holding)"
         :style="{ transform: `translate(${tooltipOffset}px)` }"
       >
         {{ tooltipText }}
