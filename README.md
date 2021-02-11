@@ -14,6 +14,7 @@
 
 ## Demo
 
+[Open Live Demo](https://freddie-nelson.github.io/vue3-slider/)
 ![Demo](https://raw.githubusercontent.com/freddie-nelson/vue3-slider/main/demo.gif)
 
 ## Installation
