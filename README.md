@@ -21,12 +21,12 @@
 
 ```bash
 # with npm
-npm install -D vue3-slider
+npm install vue3-slider
 ```
 
 ```bash
 # with yarn
-yarn add --dev vue3-slider
+yarn add vue3-slider
 ```
 
 ## Getting Started 👍
