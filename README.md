@@ -53,20 +53,21 @@ export default {
 
 ### Props
 
-| Name             | Type    | Required | Default | Rules                                                |
-| ---------------- | ------- | -------- | ------- | ---------------------------------------------------- |
-| v-model          | Number  | ✔️       |         |                                                      |
-| width            | String  |          | 100%    | must be valid css length                             |
-| height           | Number  |          | 6       |                                                      |
-| color            | String  |          | #FB2727 | must be a valid hex, rgb, rgba or html color value   |
-| trackColor       | String  |          | #F1F6F8 | ^^^                                                  |
-| max              | Number  |          | 100     | cannot be less than min                              |
-| min              | Number  |          | 0       | cannot be greater than max                           |
-| step             | Number  |          | 1       |                                                      |
-| tooltip          | Boolean |          | False   |                                                      |
-| tooltipText      | String  |          | "%v"    | must contain %v (%v is replaced with slider's value) |
-| tooltipColor     | String  |          | #FFFFFF | must be a valid hex, rgb, rgba or html color value   |
-| tooltipTextColor | String  |          | #000000 | ^^^                                                  |
+| Name             | Type     | Required | Default | Rules                                                         |
+| ---------------- | -------- | -------- | ------- | ------------------------------------------------------------- |
+| v-model          | Number   | ✔️       |         |                                                               |
+| width            | String   |          | 100%    | must be valid css length                                      |
+| height           | Number   |          | 6       |                                                               |
+| color            | String   |          | #FB2727 | must be a valid hex, rgb, rgba or html color value            |
+| trackColor       | String   |          | #F1F6F8 | ^^^                                                           |
+| max              | Number   |          | 100     | cannot be less than min                                       |
+| min              | Number   |          | 0       | cannot be greater than max                                    |
+| step             | Number   |          | 1       |                                                               |
+| tooltip          | Boolean  |          | False   |                                                               |
+| tooltipText      | String   |          | "%v"    | must contain %v (%v is replaced with slider's value)          |
+| tooltipColor     | String   |          | #FFFFFF | must be a valid hex, rgb, rgba or html color value            |
+| tooltipTextColor | String   |          | #000000 | ^^^                                                           |
+| formatTooltip    | Function |          | null    | function must take one parameter (number) and return a string |
 
 ## License
 

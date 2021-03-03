@@ -194,9 +194,22 @@ export default defineComponent({
 
     // replace %v with sliders value in tooltip text
     const tooltipText = computed(() => {
-      const stringValue = (
-        formattedSliderValue.value || Math.floor(modelValueUnrounded.value)
-      ).toString();
+      let stringValue = "";
+
+      // if format function is provided then use that
+      // else just convert raw value to string
+      if (
+        props.formatTooltip !== null &&
+        typeof props.formatTooltip === "function"
+      ) {
+        stringValue = props.formatTooltip(
+          formattedSliderValue.value || Math.floor(modelValueUnrounded.value)
+        );
+      } else {
+        stringValue = (
+          formattedSliderValue.value || Math.floor(modelValueUnrounded.value)
+        ).toString();
+      }
 
       return props.tooltipText.replace("%v", stringValue);
     });

@@ -65,6 +65,17 @@ export default {
     type: String,
     default: "#000000",
   },
+  formatTooltip: {
+    validator(val: any) {
+      if (typeof val !== "function") {
+        console.error("[Vue3Slider] Error: formatTooltip must be a function");
+        return false;
+      } else {
+        console.error("[Vue3Slider] Error: formatTooltip must return a string");
+        return typeof val() === "string";
+      }
+    },
+  },
   modelValue: {
     type: Number,
     default: 0,
