@@ -70,10 +70,12 @@ export default {
       if (typeof val !== "function") {
         console.error("[Vue3Slider] Error: formatTooltip must be a function");
         return false;
-      } else {
+      } else if (typeof val(0) !== "string") {
         console.error("[Vue3Slider] Error: formatTooltip must return a string");
-        return typeof val() === "string";
+        return false;
       }
+
+      return true;
     },
   },
   modelValue: {
