@@ -226,6 +226,20 @@ export default defineComponent({
       return filledWidth.value - width / 2;
     });
 
+    // calculate stroke offset for circular slider
+    const circumference = computed(() => {
+      if (!slider.value) return 1;
+
+      return 2 * Math.PI * (slider.value.clientWidth * 0.46);
+    });
+
+    const strokeOffset = computed(() => {
+      return (
+        ((sliderRange - modelValueUnrounded.value) / sliderRange) *
+        circumference.value
+      );
+    });
+
     onMounted(() => {
       initObserver();
     });
@@ -253,6 +267,8 @@ export default defineComponent({
       tooltipText,
       tooltipOffset,
       vars,
+      circumference,
+      strokeOffset,
     };
   },
 });
@@ -260,6 +276,7 @@ export default defineComponent({
 
 <template>
   <div
+    v-if="orientation == 'horizontal'"
     :style="{ ...vars }"
     class="vue3-slider"
     @resize="filledWidth"
@@ -288,6 +305,37 @@ export default defineComponent({
       :class="{ hover: applyHandleHoverClass }"
     />
   </div>
+  <div
+    v-else-if="orientation === 'circular'"
+    class="vue3-slider circular"
+    ref="slider"
+    :style="{ ...vars }"
+  >
+    <svg width="100%" height="100%" viewBox="0 0 100 100">
+      <circle
+        stroke="var(--track-color)"
+        vector-effect="non-scaling-stroke"
+        fill="none"
+        stroke-width="var(--height)"
+        r="46%"
+        cx="50"
+        cy="50"
+      ></circle>
+
+      <circle
+        style="transform: rotate(-90deg); transform-origin: center"
+        stroke="var(--color)"
+        vector-effect="non-scaling-stroke"
+        fill="none"
+        stroke-width="var(--height)"
+        r="46%"
+        cx="50"
+        cy="50"
+        :stroke-dasharray="circumference"
+        :stroke-dashoffset="strokeOffset"
+      ></circle>
+    </svg>
+  </div>
 </template>
 
 <style lang="scss">
@@ -308,6 +356,16 @@ export default defineComponent({
   margin: 3px 0;
   cursor: pointer;
   font-family: inherit;
+
+  &.circular {
+    height: var(--width, 100%);
+    margin: 0;
+    cursor: auto;
+
+    circle {
+      cursor: pointer;
+    }
+  }
 
   & * {
     -webkit-user-drag: none;

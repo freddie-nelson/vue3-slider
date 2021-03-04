@@ -9,14 +9,25 @@ export default defineComponent({
   },
   data() {
     return {
-      sliderVal: 10,
+      sliderVal: 30,
     };
+  },
+  methods: {
+    format(val: number): string {
+      return (val + 100).toString();
+    },
   },
 });
 </script>
 
 <template>
-  <vue3-slider class="slider" tooltip v-model="sliderVal" />
+  <vue3-slider
+    class="slider"
+    v-model="sliderVal"
+    orientation="circular"
+    :height="7"
+    width="300px"
+  />
   <h1>{{ sliderVal }}</h1>
 </template>
 
@@ -42,10 +53,6 @@ body {
 
 h1 {
   color: rgba(255, 255, 255, 0.8);
-}
-
-.slider {
-  /* animation: color-shift 12s linear infinite; */
 }
 
 @keyframes color-shift {

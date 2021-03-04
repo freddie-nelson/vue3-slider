@@ -78,6 +78,13 @@ export default {
       return true;
     },
   },
+  orientation: {
+    type: String,
+    default: "horizontal",
+    validator(val: string) {
+      return val === "horizontal" || val === "vertical" || val === "circular";
+    },
+  },
   modelValue: {
     type: Number,
     default: 0,
