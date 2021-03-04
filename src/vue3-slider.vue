@@ -113,11 +113,53 @@ export default defineComponent({
     // Handle dragging slider
     const holding = ref(false);
 
+    // calculate slider value from mouse position
+    const calcSliderValue = (
+      globalMouseX: number,
+      globalMouseY: number
+    ): number => {
+      const rect = slider.value.getBoundingClientRect();
+      let value = (globalMouseX - rect.x) / pixelsPerStep.value;
+
+      if (props.orientation === "circular") {
+        const mouseX = globalMouseX - rect.x;
+        const mouseY = globalMouseY - rect.y;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const gradient = (mouseY - centerY) / (mouseX - centerX);
+        let angle = (Math.atan(gradient) * 180) / Math.PI;
+        // correct angle in circle quadrants
+        // right
+        if (mouseX > centerX) {
+          // top
+          if (mouseY < centerY) {
+            angle = 90 - Math.abs(angle);
+          } else {
+            // bottom
+            angle += 90;
+          }
+
+          // left
+        } else {
+          // top
+          if (mouseY < centerY) {
+            angle = 270 + angle;
+          } else {
+            // bottom
+            angle = 270 + angle;
+          }
+        }
+
+        value = angle * (sliderRange / 360);
+      }
+
+      return value;
+    };
+
     const startSlide = (e: MouseEvent | TouchEvent) => {
       holding.value = true;
       e.preventDefault();
-
-      const rect = slider.value.getBoundingClientRect();
 
       if (e.type === "touchstart") {
         const touchEvent = <TouchEvent>e;
@@ -125,7 +167,8 @@ export default defineComponent({
         if (touchEvent.touches.length > 1) return;
         const touch = touchEvent.touches[0];
 
-        updateModelValue((touch.pageX - rect.x) / pixelsPerStep.value);
+        const value = calcSliderValue(touch.pageX, touch.pageY);
+        updateModelValue(value);
 
         window.addEventListener("touchend", () => {
           if (holding.value) holding.value = false;
@@ -146,14 +189,15 @@ export default defineComponent({
               touchPosInsideSlider > 0 &&
               touchPosInsideSlider <= slider.value.clientWidth
             ) {
-              updateModelValue(touchPosInsideSlider / pixelsPerStep.value);
+              const value = calcSliderValue(touch.pageX, touch.pageY);
+              updateModelValue(value);
             }
           }
         });
       } else {
-        const mouseEvent = <MouseEvent>e;
-
-        updateModelValue((mouseEvent.pageX - rect.x) / pixelsPerStep.value);
+        const mouse = <MouseEvent>e;
+        const value = calcSliderValue(mouse.pageX, mouse.pageY);
+        updateModelValue(value);
 
         window.addEventListener("mouseup", () => {
           if (holding.value) holding.value = false;
@@ -162,16 +206,17 @@ export default defineComponent({
           window.onmousemove = null;
         });
 
-        window.addEventListener("mousemove", (e: MouseEvent) => {
+        window.addEventListener("mousemove", (mouse: MouseEvent) => {
           if (holding.value) {
             const rect = slider.value.getBoundingClientRect();
-            const mousePosInsideSlider = e.pageX - rect.x;
+            const mousePosInsideSlider = mouse.pageX - rect.x;
 
             if (
               mousePosInsideSlider > 0 &&
               mousePosInsideSlider <= slider.value.clientWidth
             ) {
-              updateModelValue(mousePosInsideSlider / pixelsPerStep.value);
+              const value = calcSliderValue(mouse.pageX, mouse.pageY);
+              updateModelValue(value);
             }
           }
         });
@@ -279,7 +324,6 @@ export default defineComponent({
     v-if="orientation == 'horizontal'"
     :style="{ ...vars }"
     class="vue3-slider"
-    @resize="filledWidth"
     ref="slider"
     @touchstart="startSlide"
     @mousedown="startSlide"
@@ -310,6 +354,10 @@ export default defineComponent({
     class="vue3-slider circular"
     ref="slider"
     :style="{ ...vars }"
+    @touchstart="startSlide"
+    @mousedown="startSlide"
+    @mouseenter="hovering = true"
+    @mouseleave="hovering = false"
   >
     <svg width="100%" height="100%" viewBox="0 0 100 100">
       <circle
