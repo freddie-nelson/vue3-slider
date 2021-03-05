@@ -11,9 +11,10 @@
     "range",
     "component",
     "ui",
-    "color",
+    "customizable",
+    "circular",
+    "circle",
     "typescript",
-    "no dependencies",
     "0 dependencies"
   ],
   "homepage": "https://github.com/freddie-nelson/vue3-slider",
