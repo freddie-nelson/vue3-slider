@@ -27,6 +27,7 @@ export default defineComponent({
     orientation="circular"
     :height="12"
     width="300px"
+    :repeat="false"
   />
   <h1>{{ sliderVal }}</h1>
 </template>

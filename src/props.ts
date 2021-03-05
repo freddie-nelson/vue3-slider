@@ -90,4 +90,8 @@ export default {
     default: 0,
     required: true,
   },
+  repeat: {
+    type: Boolean,
+    default: false,
+  },
 };

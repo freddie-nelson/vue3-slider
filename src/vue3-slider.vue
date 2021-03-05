@@ -114,7 +114,8 @@ export default defineComponent({
     // calculate slider value from mouse position
     const calcSliderValue = (
       globalMouseX: number,
-      globalMouseY: number
+      globalMouseY: number,
+      dragging: boolean
     ): number => {
       const rect = slider.value.getBoundingClientRect();
       let value = (globalMouseX - rect.x) / pixelsPerStep.value;
@@ -151,6 +152,14 @@ export default defineComponent({
         }
 
         value = angle * (sliderRange / 360);
+
+        // stop value from going to 0 when at max
+        if (!props.repeat && dragging) {
+          const diff = Math.abs(angle - sliderValueDegrees.value);
+          if (diff > 30) {
+            return modelValueUnrounded.value;
+          }
+        }
       }
 
       return value;
@@ -166,7 +175,7 @@ export default defineComponent({
         if (touchEvent.touches.length > 1) return;
         const touch = touchEvent.touches[0];
 
-        const value = calcSliderValue(touch.pageX, touch.pageY);
+        const value = calcSliderValue(touch.pageX, touch.pageY, false);
         updateModelValue(value);
 
         window.addEventListener("touchend", () => {
@@ -189,14 +198,14 @@ export default defineComponent({
               (touchPosInsideSlider > 0 &&
                 touchPosInsideSlider <= slider.value.clientWidth)
             ) {
-              const value = calcSliderValue(touch.pageX, touch.pageY);
+              const value = calcSliderValue(touch.pageX, touch.pageY, true);
               updateModelValue(value);
             }
           }
         });
       } else {
         const mouse = <MouseEvent>e;
-        const value = calcSliderValue(mouse.pageX, mouse.pageY);
+        const value = calcSliderValue(mouse.pageX, mouse.pageY, false);
         updateModelValue(value);
 
         window.addEventListener("mouseup", () => {
@@ -210,7 +219,7 @@ export default defineComponent({
           if (holding.value) {
             const rect = slider.value.getBoundingClientRect();
             const mousePosInsideSlider = mouse.pageX - rect.x;
-            const value = calcSliderValue(mouse.pageX, mouse.pageY);
+            const value = calcSliderValue(mouse.pageX, mouse.pageY, true);
 
             if (
               props.orientation === "circular" ||

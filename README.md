@@ -63,12 +63,13 @@ export default {
 | max              | Number   |          | 100        | cannot be less than min                                       |
 | min              | Number   |          | 0          | cannot be greater than max                                    |
 | step             | Number   |          | 1          |                                                               |
-| tooltip          | Boolean  |          | False      |                                                               |
+| tooltip          | Boolean  |          | false      |                                                               |
 | tooltipText      | String   |          | "%v"       | must contain %v (%v is replaced with slider's value)          |
 | tooltipColor     | String   |          | #FFFFFF    | must be a valid hex, rgb, rgba or html color value            |
 | tooltipTextColor | String   |          | #000000    | ^^^                                                           |
 | formatTooltip    | Function |          | null       | function must take one parameter (number) and return a string |
 | orientation      | String   |          | horizontal | restricted choice (horizontal, vertical, circular)            |
+| repeat           | Boolean  |          | false      |                                                               |
 
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
 **NOTE: When using the circular slider it is advised to use absolute units for width to avoid issues**
