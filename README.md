@@ -73,6 +73,7 @@ export default {
 | repeat           | Boolean  |          | false      |                                                               |
 
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
+
 **NOTE: When using the circular slider it is advised to use absolute units for width to avoid issues**
 
 ## License
