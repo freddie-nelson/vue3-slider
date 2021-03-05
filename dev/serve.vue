@@ -10,25 +10,137 @@ export default defineComponent({
   data() {
     return {
       sliderVal: 30,
+      expand: false,
+      showInputs: false,
+      height: 10,
+      width: 200,
+      min: 0,
+      max: 100,
+      tooltip: true,
+      tooltipText: "%v",
+      orientation: "horizontal",
     };
   },
   methods: {
-    format(val: number): string {
-      return (val + 100).toString();
+    openControls() {
+      if (!this.expand) {
+        this.showInputs = true;
+      } else {
+        setTimeout(() => (this.showInputs = false), 300);
+      }
+
+      setTimeout(() => (this.expand = !this.expand), 10);
     },
   },
 });
 </script>
 
 <template>
+  <section class="controls" :class="{ expand }">
+    <h1>Controls</h1>
+    <div class="seperator"></div>
+
+    <div v-show="showInputs" class="inputs">
+      <div class="item">
+        <h2>height:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="height"
+          tooltip
+          :min="5"
+          :height="8"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#8e44ad"
+          tooltipColor="black"
+          tooltipTextColor="white"
+          tooltipText="%vpx"
+        />
+      </div>
+
+      <div class="item">
+        <h2>width:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="width"
+          tooltip
+          :height="8"
+          :min="70"
+          :max="650"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#8e44ad"
+          tooltipColor="black"
+          tooltipTextColor="white"
+          tooltipText="%vpx"
+        />
+      </div>
+
+      <div class="item">
+        <h2>min:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="min"
+          tooltip
+          :height="8"
+          :min="-1000"
+          :max="1000"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#8e44ad"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
+        <h2>max:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="max"
+          tooltip
+          :height="8"
+          :min="-1000"
+          :max="1000"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#8e44ad"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
+        <h2>tooltip:</h2>
+        <input type="checkbox" name="tooltip" v-model="tooltip" />
+      </div>
+
+      <div class="item">
+        <h2>tooltipText:</h2>
+        <input type="text" name="tooltipText" v-model="tooltipText" />
+      </div>
+
+      <div class="item">
+        <h2>orientation:</h2>
+        <select name="orientation" v-model="orientation">
+          <option value="horizontal">horizontal</option>
+          <option value="circular">circular</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="grow-btn" @click="openControls">
+      {{ !expand ? "open" : "close" }}
+    </button>
+  </section>
+
   <vue3-slider
     class="slider"
     v-model="sliderVal"
-    orientation="circular"
-    :height="14"
-    tooltip
-    width="7rem"
+    :height="height"
+    :tooltip="tooltip"
+    :width="width + 'px'"
     :repeat="false"
+    :min="min"
+    :max="max"
+    :tooltipText="tooltipText"
+    :orientation="orientation"
   />
   <h1>{{ sliderVal }}</h1>
 </template>
@@ -55,6 +167,79 @@ body {
 
 h1 {
   color: rgba(255, 255, 255, 0.8);
+}
+
+.controls {
+  z-index: 10;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 15rem;
+  padding: 1.2rem;
+  background-color: #fff;
+  border-radius: 0.6rem;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.controls.expand {
+  width: 22rem;
+}
+
+.controls.expand .inputs {
+  height: 255px;
+  opacity: 1;
+}
+
+.controls .inputs {
+  margin-bottom: 0.5rem;
+  height: 0;
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.controls .inputs h2 {
+  padding-right: 0.8rem;
+  margin: 0;
+  font-size: 0;
+}
+
+.controls.expand .inputs h2 {
+  padding-right: 0.8rem;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.controls .inputs .item {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0;
+}
+
+.controls h1 {
+  color: black;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.seperator {
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  margin: 0.6rem 0;
+}
+
+.controls .grow-btn {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 0.4rem;
+  outline: none;
+  cursor: pointer;
 }
 
 @keyframes color-shift {

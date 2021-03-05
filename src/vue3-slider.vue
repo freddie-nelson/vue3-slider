@@ -103,9 +103,14 @@ export default defineComponent({
     const sliderWidth = ref(0);
 
     const initObserver = () => {
-      const observer = new ResizeObserver(() => {
+      const observer = new ResizeObserver((entries: any) => {
         filledWidth.value = getNewFilledWidth();
         sliderWidth.value = slider.value ? slider.value.clientWidth : 0;
+
+        if (slider?.value !== entries[0].target) {
+          observer.unobserve(entries[0].target);
+          observer.observe(slider.value);
+        }
       });
 
       observer.observe(slider.value);
@@ -343,6 +348,7 @@ export default defineComponent({
 <template>
   <div
     v-if="orientation == 'horizontal'"
+    key="horizontal"
     :style="{ ...vars }"
     class="vue3-slider"
     ref="slider"
@@ -372,6 +378,7 @@ export default defineComponent({
   </div>
   <div
     v-else-if="orientation === 'circular'"
+    key="circular"
     class="vue3-slider circular"
     ref="slider"
     :style="{ ...vars }"
