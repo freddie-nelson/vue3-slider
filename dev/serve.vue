@@ -25,8 +25,9 @@ export default defineComponent({
     class="slider"
     v-model="sliderVal"
     orientation="circular"
-    :height="12"
-    width="300px"
+    :height="14"
+    tooltip
+    width="7rem"
     :repeat="false"
   />
   <h1>{{ sliderVal }}</h1>

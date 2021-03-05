@@ -59,7 +59,7 @@ export default defineComponent({
     const pixelsPerStep = ref(1);
 
     // calculate slider range
-    const sliderRange = (() => {
+    const sliderRange = computed(() => {
       let range = 0;
 
       if (props.min < 0) {
@@ -69,13 +69,13 @@ export default defineComponent({
       }
 
       return range;
-    })();
+    });
 
     const getNewFilledWidth = (): number => {
       if (!slider.value) return 0;
 
       const sliderWidth = slider.value.clientWidth;
-      pixelsPerStep.value = sliderWidth / sliderRange;
+      pixelsPerStep.value = sliderWidth / sliderRange.value;
 
       // clamp value between 0 and the maximum width of the slider
       const clamped = Math.max(
@@ -100,9 +100,12 @@ export default defineComponent({
     });
 
     // start resize observer so that filled width is responsive
+    const sliderWidth = ref(0);
+
     const initObserver = () => {
       const observer = new ResizeObserver(() => {
         filledWidth.value = getNewFilledWidth();
+        sliderWidth.value = slider.value ? slider.value.clientWidth : 0;
       });
 
       observer.observe(slider.value);
@@ -151,7 +154,7 @@ export default defineComponent({
           }
         }
 
-        value = angle * (sliderRange / 360);
+        value = angle * (sliderRange.value / 360);
 
         // stop value from going to 0 when at max
         if (!props.repeat && dragging) {
@@ -285,33 +288,36 @@ export default defineComponent({
     const circumference = computed(() => {
       if (!slider.value) return 1;
 
-      return 2 * Math.PI * (slider.value.clientWidth / 2);
+      return 2 * Math.PI * (sliderWidth.value / 2);
     });
 
     const strokeOffset = computed(() => {
       return (
-        ((sliderRange - modelValueUnrounded.value) / sliderRange) *
+        ((sliderRange.value - modelValueUnrounded.value) / sliderRange.value) *
         circumference.value
       );
     });
 
     const sliderValueDegrees = computed(() => {
-      return modelValueUnrounded.value / (sliderRange / 360);
+      return modelValueUnrounded.value / (sliderRange.value / 360);
     });
 
     onMounted(() => {
+      // start resize observer on slider when component loads
       initObserver();
     });
 
-    const vars = {
-      "--width": props.width,
-      "--height": props.height + "px",
-      "--color": props.color,
-      "--track-color": props.trackColor,
-      "--handle-size": props.height + 6 + "px",
-      "--tooltip-color": props.tooltipColor,
-      "--tooltip-text-color": props.tooltipTextColor,
-    };
+    const vars = computed(() => {
+      return {
+        "--width": props.width,
+        "--height": props.height + "px",
+        "--color": props.color,
+        "--track-color": props.trackColor,
+        "--handle-size": props.height + 6 + "px",
+        "--tooltip-color": props.tooltipColor,
+        "--tooltip-text-color": props.tooltipTextColor,
+      };
+    });
 
     return {
       updateModelValue,
@@ -321,7 +327,7 @@ export default defineComponent({
       startSlide,
       applyHandleHoverClass,
       hovering,
-      showTooltip: props.tooltip,
+      showTooltip: computed(() => props.tooltip),
       tooltip,
       tooltipText,
       tooltipOffset,
@@ -411,6 +417,17 @@ export default defineComponent({
       :style="{ transform: `rotate(${sliderValueDegrees}deg)` }"
     >
       <div class="handle" :class="{ hover: applyHandleHoverClass }" />
+
+      <transition name="fade">
+        <div
+          class="tooltip"
+          ref="tooltip"
+          v-show="showTooltip && (hovering || holding)"
+          :style="{ transform: `rotate(${-sliderValueDegrees}deg)` }"
+        >
+          {{ tooltipText }}
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -437,11 +454,6 @@ export default defineComponent({
   &.circular {
     height: var(--width, 100%);
     margin: 0;
-    cursor: auto;
-
-    circle {
-      cursor: pointer;
-    }
 
     .round-end {
       position: absolute;
@@ -475,6 +487,12 @@ export default defineComponent({
         &.hover {
           transform: scale(1.7);
         }
+      }
+
+      .tooltip {
+        position: absolute;
+        left: unset;
+        margin: calc(var(--height, 6px) * -1);
       }
     }
   }

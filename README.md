@@ -1,5 +1,6 @@
 # 🔥 Vue 3 Slider 🔥
 
+**Horizontal, vertical and circular sliders!**
 **Now with full support for touch screens!**
 
 ## Table of Contents 📰
