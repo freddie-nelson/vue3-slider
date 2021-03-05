@@ -33,8 +33,6 @@ export default defineComponent({
       // round number to the nearest multiple of step (round up or down)
       if (val > 0) {
         roundedVal = Math.round(val / step) * step;
-      } else if (val < 0) {
-        roundedVal = Math.round(val / step) * step;
       } else {
         roundedVal = 0;
       }
@@ -129,6 +127,7 @@ export default defineComponent({
 
         const gradient = (mouseY - centerY) / (mouseX - centerX);
         let angle = (Math.atan(gradient) * 180) / Math.PI;
+
         // correct angle in circle quadrants
         // right
         if (mouseX > centerX) {
@@ -186,8 +185,9 @@ export default defineComponent({
             const touchPosInsideSlider = touch.pageX - rect.x;
 
             if (
-              touchPosInsideSlider > 0 &&
-              touchPosInsideSlider <= slider.value.clientWidth
+              props.orientation !== "circular" ||
+              (touchPosInsideSlider > 0 &&
+                touchPosInsideSlider <= slider.value.clientWidth)
             ) {
               const value = calcSliderValue(touch.pageX, touch.pageY);
               updateModelValue(value);
@@ -210,12 +210,13 @@ export default defineComponent({
           if (holding.value) {
             const rect = slider.value.getBoundingClientRect();
             const mousePosInsideSlider = mouse.pageX - rect.x;
+            const value = calcSliderValue(mouse.pageX, mouse.pageY);
 
             if (
-              mousePosInsideSlider > 0 &&
-              mousePosInsideSlider <= slider.value.clientWidth
+              props.orientation === "circular" ||
+              (mousePosInsideSlider > 0 &&
+                mousePosInsideSlider <= slider.value.clientWidth)
             ) {
-              const value = calcSliderValue(mouse.pageX, mouse.pageY);
               updateModelValue(value);
             }
           }
@@ -275,7 +276,7 @@ export default defineComponent({
     const circumference = computed(() => {
       if (!slider.value) return 1;
 
-      return 2 * Math.PI * (slider.value.clientWidth * 0.46);
+      return 2 * Math.PI * (slider.value.clientWidth / 2);
     });
 
     const strokeOffset = computed(() => {
@@ -283,6 +284,10 @@ export default defineComponent({
         ((sliderRange - modelValueUnrounded.value) / sliderRange) *
         circumference.value
       );
+    });
+
+    const sliderValueDegrees = computed(() => {
+      return modelValueUnrounded.value / (sliderRange / 360);
     });
 
     onMounted(() => {
@@ -314,6 +319,7 @@ export default defineComponent({
       vars,
       circumference,
       strokeOffset,
+      sliderValueDegrees,
     };
   },
 });
@@ -359,13 +365,18 @@ export default defineComponent({
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
-    <svg width="100%" height="100%" viewBox="0 0 100 100">
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 100 100"
+      style="overflow: visible"
+    >
       <circle
         stroke="var(--track-color)"
         vector-effect="non-scaling-stroke"
         fill="none"
         stroke-width="var(--height)"
-        r="46%"
+        r="50%"
         cx="50"
         cy="50"
       ></circle>
@@ -376,13 +387,22 @@ export default defineComponent({
         vector-effect="non-scaling-stroke"
         fill="none"
         stroke-width="var(--height)"
-        r="46%"
+        r="50%"
         cx="50"
         cy="50"
         :stroke-dasharray="circumference"
         :stroke-dashoffset="strokeOffset"
       ></circle>
     </svg>
+
+    <div class="handle round-end" />
+
+    <div
+      class="handle-container"
+      :style="{ transform: `rotate(${sliderValueDegrees}deg)` }"
+    >
+      <div class="handle" :class="{ hover: applyHandleHoverClass }" />
+    </div>
   </div>
 </template>
 
@@ -412,6 +432,41 @@ export default defineComponent({
 
     circle {
       cursor: pointer;
+    }
+
+    .round-end {
+      position: absolute;
+      margin: 0 auto;
+      width: var(--height, 6px);
+      height: var(--height, 6px);
+      transform: scale(1);
+      left: 0;
+      right: 0;
+      top: calc(var(--height, 6px) * -0.5);
+    }
+
+    .handle-container {
+      user-select: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .handle {
+        top: calc(var(--height, 6px) * -0.5);
+        width: var(--height, 6px);
+        height: var(--height, 6px);
+        transform: scale(1);
+
+        &.hover {
+          transform: scale(1.7);
+        }
+      }
     }
   }
 
