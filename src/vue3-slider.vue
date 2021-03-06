@@ -139,10 +139,14 @@ export default defineComponent({
 
         // correct angle in circle quadrants
         // right
-        if (mouseX > centerX) {
+        if (mouseX >= centerX) {
           // top
           if (mouseY < centerY) {
-            angle = 90 - Math.abs(angle);
+            if (Math.ceil(angle) === 180) {
+              angle = 0;
+            } else {
+              angle = 90 - Math.abs(angle);
+            }
           } else {
             // bottom
             angle += 90;
