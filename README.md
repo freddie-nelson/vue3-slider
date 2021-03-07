@@ -1,6 +1,4 @@
-<h1 style="display: inline;">🔥 Vue 3 Slider 🔥</h1>
-<iframe style="display: inline; float: right;" src="https://ghbtns.com/github-btn.html?user=freddie-nelson&repo=vue3-slider&type=star&count=true&size=large" frameborder="0" scrolling="0" width="130" height="30" title="GitHub"></iframe>
-<br><br>
+# 🔥 Vue 3 Slider 🔥
 
 **Horizontal, vertical and circular sliders!**
 **Fully responsive and full touch screen support!**
