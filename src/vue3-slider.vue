@@ -300,13 +300,45 @@ export default defineComponent({
       return props.tooltipText.replace("%v", stringValue);
     });
 
+    // watch tooltip width
+    const tooltipWidth = ref(0);
+
+    const initTooltipObserver = () => {
+      const observer = new ResizeObserver((entries: any) => {
+        if (tooltip.value) {
+          tooltipWidth.value = tooltip.value.clientWidth;
+
+          if (tooltip.value !== entries[0].target) {
+            observer.unobserve(entries[0].target);
+            observer.observe(tooltip.value);
+          }
+        }
+      });
+
+      if (tooltip.value) observer.observe(tooltip.value);
+    };
+
     // calculate tooltip offset
     const tooltipOffset = computed(() => {
-      let width = tooltip.value?.clientWidth;
+      let width: number | undefined = tooltipWidth.value;
 
       // estimate width if it cant be found
-      if (!width) {
-        width = 14 + modelValueUnrounded.value.toString().length * 9;
+      if (props.orientation !== "horizontal") {
+        width = tooltip.value?.clientHeight;
+
+        if (!width) {
+          width = 20;
+        }
+
+        if (props.orientation !== "vertical") {
+          return width;
+        }
+      } else {
+        if (!width) {
+          width = 14 + formattedSliderValue.value.toString().length * 9;
+        } else {
+          width += props.height / 3;
+        }
       }
 
       return filledWidth.value - width / 2;
@@ -331,8 +363,9 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      // start resize observer on slider when component loads
+      // start resize observer when component loads
       initObserver();
+      initTooltipObserver();
     });
 
     const vars = computed(() => {
@@ -484,7 +517,10 @@ export default defineComponent({
           class="tooltip"
           ref="tooltip"
           v-show="showTooltip && (hovering || holding)"
-          :style="{ transform: `rotate(${-sliderValueDegrees}deg)` }"
+          :style="{
+            transform: `rotate(${-sliderValueDegrees}deg)`,
+            top: `calc(-${tooltipOffset + 10}px - var(--height))`,
+          }"
         >
           {{ tooltipText }}
         </div>
@@ -531,8 +567,9 @@ export default defineComponent({
     .tooltip {
       bottom: 0;
       top: auto;
-      left: auto;
-      right: -50px;
+      left: calc(
+        max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))
+      );
     }
   }
 
@@ -576,8 +613,8 @@ export default defineComponent({
 
       .tooltip {
         position: absolute;
+        bottom: auto;
         left: unset;
-        margin: calc(var(--height, 6px) * -1);
       }
     }
   }
@@ -590,7 +627,9 @@ export default defineComponent({
   .tooltip {
     position: absolute;
     left: 0;
-    top: -44px;
+    bottom: calc(
+      max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))
+    );
     height: 25px;
     background-color: var(--tooltip-color);
     color: var(--tooltip-text-color);

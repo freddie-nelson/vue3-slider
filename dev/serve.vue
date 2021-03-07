@@ -16,6 +16,7 @@ export default defineComponent({
       width: 200,
       min: 0,
       max: 100,
+      step: 1,
       tooltip: true,
       tooltipText: "%v",
       orientation: "horizontal",
@@ -108,6 +109,23 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>step:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="step"
+          tooltip
+          :height="8"
+          :min="0"
+          :max="50"
+          :step="0.1"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#005CC8"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
         <h2>tooltip:</h2>
         <input type="checkbox" name="tooltip" v-model="tooltip" />
       </div>
@@ -147,6 +165,7 @@ export default defineComponent({
     :repeat="false"
     :min="min"
     :max="max"
+    :step="step"
     :tooltipText="tooltipText"
     :orientation="orientation"
   />
