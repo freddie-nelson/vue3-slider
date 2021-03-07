@@ -417,7 +417,10 @@ export default defineComponent({
         class="tooltip"
         ref="tooltip"
         v-show="showTooltip && (hovering || holding)"
-        :style="{ transform: `translate(${tooltipOffset}px)` }"
+        :style="{
+          transform: `translate(${tooltipOffset}px)`,
+          bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))`,
+        }"
       >
         {{ tooltipText }}
       </div>
@@ -448,7 +451,10 @@ export default defineComponent({
         class="tooltip"
         ref="tooltip"
         v-show="showTooltip && (hovering || holding)"
-        :style="{ transform: `translateY(${-tooltipOffset}px)` }"
+        :style="{
+          transform: `translateY(${-tooltipOffset}px)`,
+          left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))`,
+        }"
       >
         {{ tooltipText }}
       </div>
@@ -519,7 +525,7 @@ export default defineComponent({
           v-show="showTooltip && (hovering || holding)"
           :style="{
             transform: `rotate(${-sliderValueDegrees}deg)`,
-            top: `calc(-${tooltipOffset + 10}px - var(--height))`,
+            top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
           }"
         >
           {{ tooltipText }}
@@ -567,9 +573,6 @@ export default defineComponent({
     .tooltip {
       bottom: 0;
       top: auto;
-      left: calc(
-        max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))
-      );
     }
   }
 
@@ -627,9 +630,6 @@ export default defineComponent({
   .tooltip {
     position: absolute;
     left: 0;
-    bottom: calc(
-      max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))
-    );
     height: 25px;
     background-color: var(--tooltip-color);
     color: var(--tooltip-text-color);
