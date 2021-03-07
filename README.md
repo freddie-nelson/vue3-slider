@@ -1,4 +1,7 @@
-# 🔥 Vue 3 Slider 🔥
+<h1 style="display: flex; justify-content: space-between; align-items: center;">
+  🔥 Vue 3 Slider 🔥 
+  <a style="color: #EA005E; text-decoration: underline; font-size: 28px;" href="https://github.com/freddie-nelson/vue3-slider/stargazers">Become a Stargazer</a>
+</h1>
 
 **Horizontal, vertical and circular sliders!**
 **Fully responsive and full touch screen support!**
