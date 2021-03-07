@@ -145,7 +145,7 @@ export default defineComponent({
       </div>
 
       <div class="item">
-        <h2>color shift:</h2>
+        <h2>rainbow:</h2>
         <input type="checkbox" name="colorShift" v-model="colorShift" />
       </div>
     </div>
@@ -214,7 +214,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 290px;
+  height: 325px;
   opacity: 1;
 }
 
