@@ -19,6 +19,7 @@ export default defineComponent({
       tooltip: true,
       tooltipText: "%v",
       orientation: "horizontal",
+      colorShift: false,
     };
   },
   methods: {
@@ -50,7 +51,7 @@ export default defineComponent({
           :min="5"
           :height="8"
           trackColor="rgba(0,0,0,0.15)"
-          color="#8e44ad"
+          color="#005CC8"
           tooltipColor="black"
           tooltipTextColor="white"
           tooltipText="%vpx"
@@ -67,7 +68,7 @@ export default defineComponent({
           :min="70"
           :max="650"
           trackColor="rgba(0,0,0,0.15)"
-          color="#8e44ad"
+          color="#005CC8"
           tooltipColor="black"
           tooltipTextColor="white"
           tooltipText="%vpx"
@@ -84,7 +85,7 @@ export default defineComponent({
           :min="-1000"
           :max="1000"
           trackColor="rgba(0,0,0,0.15)"
-          color="#8e44ad"
+          color="#005CC8"
           tooltipColor="black"
           tooltipTextColor="white"
         />
@@ -100,7 +101,7 @@ export default defineComponent({
           :min="-1000"
           :max="1000"
           trackColor="rgba(0,0,0,0.15)"
-          color="#8e44ad"
+          color="#005CC8"
           tooltipColor="black"
           tooltipTextColor="white"
         />
@@ -120,8 +121,14 @@ export default defineComponent({
         <h2>orientation:</h2>
         <select name="orientation" v-model="orientation">
           <option value="horizontal">horizontal</option>
+          <option value="vertical">vertical</option>
           <option value="circular">circular</option>
         </select>
+      </div>
+
+      <div class="item">
+        <h2>color shift:</h2>
+        <input type="checkbox" name="colorShift" v-model="colorShift" />
       </div>
     </div>
 
@@ -132,6 +139,7 @@ export default defineComponent({
 
   <vue3-slider
     class="slider"
+    :class="{ colorShift }"
     v-model="sliderVal"
     :height="height"
     :tooltip="tooltip"
@@ -187,7 +195,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 255px;
+  height: 290px;
   opacity: 1;
 }
 
@@ -240,6 +248,11 @@ h1 {
   border-radius: 0.4rem;
   outline: none;
   cursor: pointer;
+}
+
+.colorShift {
+  animation: color-shift linear 20s;
+  animation-iteration-count: infinite;
 }
 
 @keyframes color-shift {

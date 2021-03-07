@@ -74,7 +74,10 @@ export default defineComponent({
     const getNewFilledWidth = (): number => {
       if (!slider.value) return 0;
 
-      const sliderWidth = slider.value.clientWidth;
+      const sliderWidth =
+        props.orientation === "vertical"
+          ? slider.value.clientHeight
+          : slider.value.clientWidth;
       pixelsPerStep.value = sliderWidth / sliderRange.value;
 
       // clamp value between 0 and the maximum width of the slider
@@ -105,7 +108,11 @@ export default defineComponent({
     const initObserver = () => {
       const observer = new ResizeObserver((entries: any) => {
         filledWidth.value = getNewFilledWidth();
-        sliderWidth.value = slider.value ? slider.value.clientWidth : 0;
+        sliderWidth.value = slider.value
+          ? props.orientation === "vertical"
+            ? slider.value.clientHeight
+            : slider.value.clientWidth
+          : 0;
 
         if (slider?.value !== entries[0].target) {
           observer.unobserve(entries[0].target);
@@ -126,9 +133,13 @@ export default defineComponent({
       dragging: boolean
     ): number => {
       const rect = slider.value.getBoundingClientRect();
-      let value = (globalMouseX - rect.x) / pixelsPerStep.value;
+      let value = 0;
 
-      if (props.orientation === "circular") {
+      if (props.orientation === "horizontal") {
+        value = (globalMouseX - rect.x) / pixelsPerStep.value;
+      } else if (props.orientation === "vertical") {
+        value = (rect.y + rect.height - globalMouseY) / pixelsPerStep.value;
+      } else {
         const mouseX = globalMouseX - rect.x;
         const mouseY = globalMouseY - rect.y;
         const centerX = rect.width / 2;
@@ -203,12 +214,15 @@ export default defineComponent({
             const touch = e.touches[0];
 
             const rect = slider.value.getBoundingClientRect();
-            const touchPosInsideSlider = touch.pageX - rect.x;
+            const touchPosInsideSlider =
+              props.orientation === "vertical"
+                ? rect.y + rect.height - touch.pageY
+                : touch.pageX - rect.x;
 
             if (
               props.orientation !== "circular" ||
-              (touchPosInsideSlider > 0 &&
-                touchPosInsideSlider <= slider.value.clientWidth)
+              (touchPosInsideSlider >= 0 &&
+                touchPosInsideSlider <= sliderWidth.value)
             ) {
               const value = calcSliderValue(touch.pageX, touch.pageY, true);
               updateModelValue(value);
@@ -230,14 +244,17 @@ export default defineComponent({
         window.addEventListener("mousemove", (mouse: MouseEvent) => {
           if (holding.value) {
             const rect = slider.value.getBoundingClientRect();
-            const mousePosInsideSlider = mouse.pageX - rect.x;
-            const value = calcSliderValue(mouse.pageX, mouse.pageY, true);
+            const mousePosInsideSlider =
+              props.orientation === "vertical"
+                ? rect.y + rect.height - mouse.pageY
+                : mouse.pageX - rect.x;
 
             if (
               props.orientation === "circular" ||
-              (mousePosInsideSlider > 0 &&
-                mousePosInsideSlider <= slider.value.clientWidth)
+              (mousePosInsideSlider >= 0 &&
+                mousePosInsideSlider <= sliderWidth.value)
             ) {
+              const value = calcSliderValue(mouse.pageX, mouse.pageY, true);
               updateModelValue(value);
             }
           }
@@ -270,11 +287,13 @@ export default defineComponent({
         typeof props.formatTooltip === "function"
       ) {
         stringValue = props.formatTooltip(
-          formattedSliderValue.value || Math.floor(modelValueUnrounded.value)
+          formattedSliderValue.value ||
+            formatModelValue(modelValueUnrounded.value)
         );
       } else {
         stringValue = (
-          formattedSliderValue.value || Math.floor(modelValueUnrounded.value)
+          formattedSliderValue.value ||
+          formatModelValue(modelValueUnrounded.value)
         ).toString();
       }
 
@@ -322,7 +341,6 @@ export default defineComponent({
         "--height": props.height + "px",
         "--color": props.color,
         "--track-color": props.trackColor,
-        "--handle-size": props.height + 6 + "px",
         "--tooltip-color": props.tooltipColor,
         "--tooltip-text-color": props.tooltipTextColor,
       };
@@ -376,12 +394,44 @@ export default defineComponent({
     <div class="track-filled" :style="{ width: filledWidth + 'px' }" />
     <div
       class="handle"
-      :style="{ left: filledWidth - (height + 6) / 2 + 'px' }"
+      :style="{ left: filledWidth - (height * 1.35) / 2 + 'px' }"
       :class="{ hover: applyHandleHoverClass }"
     />
   </div>
+
   <div
-    v-else-if="orientation === 'circular'"
+    v-else-if="orientation == 'vertical'"
+    key="vertical"
+    :style="{ ...vars }"
+    class="vue3-slider vertical"
+    ref="slider"
+    @touchstart="startSlide"
+    @mousedown="startSlide"
+    @mouseenter="hovering = true"
+    @mouseleave="hovering = false"
+  >
+    <transition name="fade">
+      <div
+        class="tooltip"
+        ref="tooltip"
+        v-show="showTooltip && (hovering || holding)"
+        :style="{ transform: `translateY(${-tooltipOffset}px)` }"
+      >
+        {{ tooltipText }}
+      </div>
+    </transition>
+
+    <div class="track" />
+    <div class="track-filled" :style="{ height: filledWidth + 'px' }" />
+    <div
+      class="handle"
+      :style="{ bottom: filledWidth - (height * 1.35) / 2 + 'px' }"
+      :class="{ hover: applyHandleHoverClass }"
+    />
+  </div>
+
+  <div
+    v-else
     key="circular"
     class="vue3-slider circular"
     ref="slider"
@@ -462,6 +512,30 @@ export default defineComponent({
   cursor: pointer;
   font-family: inherit;
 
+  &.vertical {
+    width: var(--height, 6px);
+    height: var(--width, 100%);
+
+    .track-filled {
+      width: 100%;
+      bottom: 0;
+      top: auto;
+    }
+
+    .handle {
+      top: unset;
+      bottom: 0;
+      left: 0;
+    }
+
+    .tooltip {
+      bottom: 0;
+      top: auto;
+      left: auto;
+      right: -50px;
+    }
+  }
+
   &.circular {
     height: var(--width, 100%);
     margin: 0;
@@ -496,7 +570,7 @@ export default defineComponent({
         transform: scale(1);
 
         &.hover {
-          transform: scale(1.7);
+          transform: scale(1.5);
         }
       }
 
@@ -546,17 +620,17 @@ export default defineComponent({
 
   .handle {
     position: absolute;
-    top: -3px;
-    width: var(--handle-size, 12px);
-    height: var(--handle-size, 12px);
-    border-radius: calc(var(--handle-size, 12px) / 2);
+    top: 0;
+    width: var(--height, 6px);
+    height: var(--height, 6px);
+    border-radius: calc(var(--height, 6px) / 2);
     background-color: var(--color, #fb2727);
     transform: scale(0);
     transition: transform 0.2s ease;
     user-select: none;
 
     &.hover {
-      transform: scale(1);
+      transform: scale(1.35);
     }
   }
 }
