@@ -4,7 +4,7 @@
 </h1>
 
 **Horizontal, vertical and circular sliders!**
-**Fully responsive and full touch screen support!**
+**Fully responsive, touch screen and keyboard control support!**
 
 ## Table of Contents 📰
 

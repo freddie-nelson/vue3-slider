@@ -262,6 +262,44 @@ export default defineComponent({
       }
     };
 
+    // handle keyboard controls
+    const calculateValueFromDiff = (diff: number) => {
+      const newVal = modelValueUnrounded.value + diff;
+
+      if (newVal <= 0) {
+        updateModelValue(0);
+      } else if (newVal >= sliderRange.value) {
+        updateModelValue(sliderRange.value);
+      } else {
+        updateModelValue(newVal);
+      }
+
+      console.log(modelValueUnrounded.value);
+    };
+
+    const handleFocus = () => {
+      if (slider.value.onkeydown) {
+        return;
+      }
+
+      slider.value.onkeydown = null;
+
+      slider.value.addEventListener("keydown", (e: KeyboardEvent) => {
+        switch (e.key) {
+          case "ArrowRight":
+          case "ArrowUp":
+            calculateValueFromDiff(props.step);
+            break;
+          case "ArrowLeft":
+          case "ArrowDown":
+            calculateValueFromDiff(-props.step);
+            break;
+          default:
+            break;
+        }
+      });
+    };
+
     // Apply hover styles to handle
     const hovering = ref(false);
 
@@ -385,6 +423,7 @@ export default defineComponent({
       slider,
       holding,
       startSlide,
+      handleFocus,
       applyHandleHoverClass,
       hovering,
       showTooltip: computed(() => props.tooltip),
@@ -406,11 +445,13 @@ export default defineComponent({
     key="horizontal"
     :style="{ ...vars }"
     class="vue3-slider"
+    tabindex="0"
     ref="slider"
     @touchstart="startSlide"
     @mousedown="startSlide"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
+    @focus="handleFocus"
   >
     <transition name="fade">
       <div
@@ -440,11 +481,13 @@ export default defineComponent({
     key="vertical"
     :style="{ ...vars }"
     class="vue3-slider vertical"
+    tabindex="0"
     ref="slider"
     @touchstart="startSlide"
     @mousedown="startSlide"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
+    @focus="handleFocus"
   >
     <transition name="fade">
       <div
@@ -473,12 +516,14 @@ export default defineComponent({
     v-else
     key="circular"
     class="vue3-slider circular"
+    tabindex="0"
     ref="slider"
     :style="{ ...vars }"
     @touchstart="startSlide"
     @mousedown="startSlide"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
+    @focus="handleFocus"
   >
     <svg
       width="100%"
