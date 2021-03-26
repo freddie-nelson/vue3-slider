@@ -1,5 +1,12 @@
 <script lang="ts">
-import { defineComponent, ref, watchEffect, computed, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  watchEffect,
+  computed,
+  onMounted,
+  watch,
+} from "vue";
 import props from "./props";
 
 export default defineComponent({
@@ -9,6 +16,24 @@ export default defineComponent({
     const slider = ref();
     const modelValueUnrounded = ref(props.modelValue);
     const formattedSliderValue = ref(0);
+
+    // watchers to update slider value if modelValue is changed from outside component
+    const modelValueRef = ref(props.modelValue);
+    watchEffect(() => (modelValueRef.value = props.modelValue));
+
+    watch(modelValueRef, (val) => {
+      if (formattedSliderValue.value !== val) {
+        let newValue = 0;
+        if (props.min < 0) {
+          newValue = val + Math.abs(props.min);
+        } else {
+          newValue = val - props.min;
+        }
+        if (newValue > sliderRange.value) newValue = sliderRange.value;
+
+        updateModelValue(newValue);
+      }
+    });
 
     // correct value for ranges with a min that are < 0 or > 0
     if (props.min !== 0) modelValueUnrounded.value -= props.min;
@@ -37,14 +62,7 @@ export default defineComponent({
         roundedVal = 0;
       }
 
-      // if negative min return fixed value
-      if (props.min < 0) {
-        return roundedVal + props.min;
-      } else if (props.min > 0) {
-        return roundedVal + props.min;
-      } else {
-        return roundedVal;
-      }
+      return roundedVal + props.min;
     };
 
     const updateModelValue = (val: number): void => {
@@ -63,7 +81,7 @@ export default defineComponent({
       let range = 0;
 
       if (props.min < 0) {
-        range = props.max + props.min * -1;
+        range = props.max + Math.abs(props.min);
       } else {
         range = props.max - props.min;
       }
@@ -85,15 +103,6 @@ export default defineComponent({
         Math.min(modelValueUnrounded.value * pixelsPerStep.value, sliderWidth),
         0
       );
-
-      // snap to limits
-      // if (clamped < pixelsPerStep.value /) {
-      //   return 0;
-      // } else if (sliderWidth - clamped < pixelsPerStep.value / 2) {
-      //   return sliderWidth;
-      // } else {
-      //   return clamped;
-      // }
 
       return clamped;
     };
