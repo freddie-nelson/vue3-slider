@@ -148,6 +148,9 @@ export default defineComponent({
         <h2>rainbow:</h2>
         <input type="checkbox" name="colorShift" v-model="colorShift" />
       </div>
+
+      <button @click="sliderVal += 10">Add 10 to slider value</button>
+      <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
 
     <button class="grow-btn" @click="openControls">

@@ -70,6 +70,7 @@ export default defineComponent({
       formattedSliderValue.value = formatModelValue(val);
 
       emit("update:modelValue", formattedSliderValue.value);
+      emit("change", formattedSliderValue.value);
     };
 
     // Change filled width
@@ -198,11 +199,13 @@ export default defineComponent({
     };
 
     const startSlide = (e: MouseEvent | TouchEvent) => {
-      holding.value = true;
       e.preventDefault();
+
+      holding.value = true;
 
       if (e.type === "touchstart") {
         const touchEvent = <TouchEvent>e;
+        emit("drag-start", formattedSliderValue.value, touchEvent);
 
         if (touchEvent.touches.length > 1) return;
         const touch = touchEvent.touches[0];
@@ -210,11 +213,13 @@ export default defineComponent({
         const value = calcSliderValue(touch.pageX, touch.pageY, false);
         updateModelValue(value);
 
-        window.addEventListener("touchend", () => {
+        window.addEventListener("touchend", (touch: TouchEvent) => {
           if (holding.value) holding.value = false;
 
           window.ontouchend = null;
           window.ontouchmove = null;
+
+          emit("drag-end", formattedSliderValue.value, touch);
         });
 
         window.addEventListener("touchmove", (e: TouchEvent) => {
@@ -236,18 +241,24 @@ export default defineComponent({
               const value = calcSliderValue(touch.pageX, touch.pageY, true);
               updateModelValue(value);
             }
+
+            emit("dragging", formattedSliderValue.value, e);
           }
         });
       } else {
         const mouse = <MouseEvent>e;
+        emit("drag-start", formattedSliderValue.value, mouse);
+
         const value = calcSliderValue(mouse.pageX, mouse.pageY, false);
         updateModelValue(value);
 
-        window.addEventListener("mouseup", () => {
+        window.addEventListener("mouseup", (mouse: MouseEvent) => {
           if (holding.value) holding.value = false;
 
           window.onmouseup = null;
           window.onmousemove = null;
+
+          emit("drag-end", formattedSliderValue.value, mouse);
         });
 
         window.addEventListener("mousemove", (mouse: MouseEvent) => {
@@ -266,6 +277,8 @@ export default defineComponent({
               const value = calcSliderValue(mouse.pageX, mouse.pageY, true);
               updateModelValue(value);
             }
+
+            emit("dragging", formattedSliderValue.value, mouse);
           }
         });
       }

@@ -54,7 +54,7 @@ export default {
 <vue3-slider v-model="myNumber" color="#FB278D" track-color="#FEFEFE" />
 ```
 
-### Props
+## Props
 
 | Name             | Type     | Required | Default    | Rules                                                         |
 | ---------------- | -------- | -------- | ---------- | ------------------------------------------------------------- |
@@ -77,6 +77,28 @@ export default {
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
 
 **NOTE: When using the circular slider it is advised to use absolute units for width to avoid issues**
+
+## Events
+
+#### change
+
+- Arguments: `(value: number)`
+- Usage: The event is fired when the slider value changes
+
+#### drag-start
+
+- Arguments: `(value: number, event: MouseEvent | TouchEvent)`
+- Usage: The event is fired when the user presses the slider
+
+#### drag-end
+
+- Arguments: `(value: number, event: MouseEvent | TouchEvent)`
+- Usage: The event is fired when the user releases the slider
+
+#### dragging
+
+- Arguments: `(value: number, event: MouseEvent | TouchEvent)`
+- Usage: The event is fired when the user drags the slider
 
 ## License
 
