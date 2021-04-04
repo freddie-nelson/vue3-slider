@@ -7,36 +7,41 @@ import {
   onMounted,
   watch,
 } from "vue";
+
 import props from "./props";
+
+import { useStore } from "@/store";
+
+import useDragEnd from "./listeners/useDragEnd";
+import useDragging from "./listeners/useDragging";
+
+import calcSliderValue from "@/utils/calcSliderValue";
 
 export default defineComponent({
   name: "vue3-slider",
   props,
   setup(props, { emit }) {
-    const slider = ref();
-    const modelValueUnrounded = ref(props.modelValue);
-    const formattedSliderValue = ref(0);
+    // setup store values
+    const store = useStore(props);
 
     // watchers to update slider value if modelValue is changed from outside component
     const modelValueRef = ref(props.modelValue);
     watchEffect(() => (modelValueRef.value = props.modelValue));
 
     watch(modelValueRef, (val) => {
-      if (formattedSliderValue.value !== val) {
+      if (store.formattedSliderValue.value !== val) {
         let newValue = 0;
         if (props.min < 0) {
           newValue = val + Math.abs(props.min);
         } else {
           newValue = val - props.min;
         }
-        if (newValue > sliderRange.value) newValue = sliderRange.value;
+        if (newValue > store.sliderRange.value)
+          newValue = store.sliderRange.value;
 
         updateModelValue(newValue);
       }
     });
-
-    // correct value for ranges with a min that are < 0 or > 0
-    if (props.min !== 0) modelValueUnrounded.value -= props.min;
 
     if (props.modelValue < props.min || props.modelValue > props.max) {
       console.error("[Vue3Slider] Error: value exceeds limits of slider");
@@ -66,240 +71,140 @@ export default defineComponent({
     };
 
     const updateModelValue = (val: number): void => {
-      modelValueUnrounded.value = val;
-      formattedSliderValue.value = formatModelValue(val);
+      store.modelValueUnrounded.value = val;
+      store.formattedSliderValue.value = formatModelValue(val);
 
-      emit("update:modelValue", formattedSliderValue.value);
-      emit("change", formattedSliderValue.value);
+      emit("update:modelValue", store.formattedSliderValue.value);
+      emit("change", store.formattedSliderValue.value);
     };
 
-    // Change filled width
-    const filledWidth = ref(0);
-    const pixelsPerStep = ref(1);
-
-    // calculate slider range
-    const sliderRange = computed(() => {
-      let range = 0;
-
-      if (props.min < 0) {
-        range = props.max + Math.abs(props.min);
-      } else {
-        range = props.max - props.min;
-      }
-
-      return range;
-    });
-
     const getNewFilledWidth = (): number => {
+      const slider = store.slider;
       if (!slider.value) return 0;
 
       const sliderWidth =
         props.orientation === "vertical"
           ? slider.value.clientHeight
           : slider.value.clientWidth;
-      pixelsPerStep.value = sliderWidth / sliderRange.value;
+      store.pixelsPerStep.value = sliderWidth / store.sliderRange.value;
 
       // clamp value between 0 and the maximum width of the slider
       const clamped = Math.max(
-        Math.min(modelValueUnrounded.value * pixelsPerStep.value, sliderWidth),
+        Math.min(
+          store.modelValueUnrounded.value * store.pixelsPerStep.value,
+          sliderWidth
+        ),
         0
       );
 
       return clamped;
     };
 
-    watchEffect(() => {
-      filledWidth.value = getNewFilledWidth();
-    });
-
     // start resize observer so that filled width is responsive
-    const sliderWidth = ref(0);
-
     const initObserver = () => {
       const observer = new ResizeObserver((entries: any) => {
-        filledWidth.value = getNewFilledWidth();
-        sliderWidth.value = slider.value
+        store.filledWidth.value = getNewFilledWidth();
+        store.sliderWidth.value = store.slider.value
           ? props.orientation === "vertical"
-            ? slider.value.clientHeight
-            : slider.value.clientWidth
+            ? store.slider.value.clientHeight
+            : store.slider.value.clientWidth
           : 0;
 
-        if (slider?.value !== entries[0].target) {
+        if (store.slider?.value !== entries[0].target) {
           observer.unobserve(entries[0].target);
-          observer.observe(slider.value);
+          observer.observe(store.slider.value);
         }
       });
 
-      observer.observe(slider.value);
+      observer.observe(store.slider.value);
     };
+
+    watchEffect(() => {
+      store.filledWidth.value = getNewFilledWidth();
+    });
 
     // Handle dragging slider
-    const holding = ref(false);
-
-    // calculate slider value from mouse position
-    const calcSliderValue = (
-      globalMouseX: number,
-      globalMouseY: number,
-      dragging: boolean
-    ): number => {
-      const rect = slider.value.getBoundingClientRect();
-      let value = 0;
-
-      if (props.orientation === "horizontal") {
-        value = (globalMouseX - rect.x) / pixelsPerStep.value;
-      } else if (props.orientation === "vertical") {
-        value = (rect.y + rect.height - globalMouseY) / pixelsPerStep.value;
-      } else {
-        const mouseX = globalMouseX - rect.x;
-        const mouseY = globalMouseY - rect.y;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const gradient = (mouseY - centerY) / (mouseX - centerX);
-        let angle = (Math.atan(gradient) * 180) / Math.PI;
-
-        // correct angle in circle quadrants
-        // right
-        if (mouseX >= centerX) {
-          // top
-          if (mouseY < centerY) {
-            if (Math.ceil(angle) === 180) {
-              angle = 0;
-            } else {
-              angle = 90 - Math.abs(angle);
-            }
-          } else {
-            // bottom
-            angle += 90;
-          }
-
-          // left
-        } else {
-          // top
-          if (mouseY < centerY) {
-            angle = 270 + angle;
-          } else {
-            // bottom
-            angle = 270 + angle;
-          }
-        }
-
-        value = angle * (sliderRange.value / 360);
-
-        // stop value from going to 0 when at max
-        if (!props.repeat && dragging) {
-          const diff = Math.abs(angle - sliderValueDegrees.value);
-          if (diff > 30) {
-            return modelValueUnrounded.value;
-          }
-        }
-      }
-
-      return value;
-    };
-
     const startSlide = (e: MouseEvent | TouchEvent) => {
       e.preventDefault();
 
-      holding.value = true;
+      store.holding.value = true;
+      emit("drag-start", store.formattedSliderValue.value, e);
 
       if (e.type === "touchstart") {
-        const touchEvent = <TouchEvent>e;
-        emit("drag-start", formattedSliderValue.value, touchEvent);
+        // do initial slider calculation
+        if ((e as TouchEvent).touches.length > 1) return;
+        const touch = (e as TouchEvent).touches[0];
 
-        if (touchEvent.touches.length > 1) return;
-        const touch = touchEvent.touches[0];
-
-        const value = calcSliderValue(touch.pageX, touch.pageY, false);
+        const value = calcSliderValue(
+          store,
+          props.orientation,
+          props.repeat,
+          touch.pageX,
+          touch.pageY,
+          false
+        );
         updateModelValue(value);
 
-        window.addEventListener("touchend", (touch: TouchEvent) => {
-          if (holding.value) holding.value = false;
+        // add event listeners
+        window.addEventListener("touchend", (e: TouchEvent) =>
+          useDragEnd(store, e, emit)
+        );
 
-          window.ontouchend = null;
-          window.ontouchmove = null;
-
-          emit("drag-end", formattedSliderValue.value, touch);
-        });
-
-        window.addEventListener("touchmove", (e: TouchEvent) => {
-          if (holding.value) {
-            if (e.touches.length > 1) return;
-            const touch = e.touches[0];
-
-            const rect = slider.value.getBoundingClientRect();
-            const touchPosInsideSlider =
-              props.orientation === "vertical"
-                ? rect.y + rect.height - touch.pageY
-                : touch.pageX - rect.x;
-
-            if (
-              props.orientation !== "circular" ||
-              (touchPosInsideSlider >= 0 &&
-                touchPosInsideSlider <= sliderWidth.value)
-            ) {
-              const value = calcSliderValue(touch.pageX, touch.pageY, true);
-              updateModelValue(value);
-            }
-
-            emit("dragging", formattedSliderValue.value, e);
-          }
-        });
+        window.addEventListener("touchmove", (e: TouchEvent) =>
+          useDragging(
+            store,
+            e,
+            emit,
+            props.orientation,
+            props.repeat,
+            updateModelValue
+          )
+        );
       } else {
-        const mouse = <MouseEvent>e;
-        emit("drag-start", formattedSliderValue.value, mouse);
-
-        const value = calcSliderValue(mouse.pageX, mouse.pageY, false);
+        // do initial slider calculation
+        const value = calcSliderValue(
+          store,
+          props.orientation,
+          props.repeat,
+          (e as MouseEvent).pageX,
+          (e as MouseEvent).pageY,
+          false
+        );
         updateModelValue(value);
 
-        window.addEventListener("mouseup", (mouse: MouseEvent) => {
-          if (holding.value) holding.value = false;
+        // add event listeners
+        window.addEventListener("mouseup", (e: MouseEvent) =>
+          useDragEnd(store, e, emit)
+        );
 
-          window.onmouseup = null;
-          window.onmousemove = null;
-
-          emit("drag-end", formattedSliderValue.value, mouse);
-        });
-
-        window.addEventListener("mousemove", (mouse: MouseEvent) => {
-          if (holding.value) {
-            const rect = slider.value.getBoundingClientRect();
-            const mousePosInsideSlider =
-              props.orientation === "vertical"
-                ? rect.y + rect.height - mouse.pageY
-                : mouse.pageX - rect.x;
-
-            if (
-              props.orientation === "circular" ||
-              (mousePosInsideSlider >= 0 &&
-                mousePosInsideSlider <= sliderWidth.value)
-            ) {
-              const value = calcSliderValue(mouse.pageX, mouse.pageY, true);
-              updateModelValue(value);
-            }
-
-            emit("dragging", formattedSliderValue.value, mouse);
-          }
-        });
+        window.addEventListener("mousemove", (e: MouseEvent) =>
+          useDragging(
+            store,
+            e,
+            emit,
+            props.orientation,
+            props.repeat,
+            updateModelValue
+          )
+        );
       }
     };
 
     // handle keyboard controls
     const calculateValueFromDiff = (diff: number) => {
-      const newVal = modelValueUnrounded.value + diff;
+      const newVal = store.modelValueUnrounded.value + diff;
 
       if (newVal <= 0) {
         updateModelValue(0);
-      } else if (newVal >= sliderRange.value) {
-        updateModelValue(sliderRange.value);
+      } else if (newVal >= store.sliderRange.value) {
+        updateModelValue(store.sliderRange.value);
       } else {
         updateModelValue(newVal);
       }
-
-      console.log(modelValueUnrounded.value);
     };
 
     const handleFocus = () => {
+      const slider = store.slider;
       if (slider.value.onkeydown) {
         return;
       }
@@ -326,7 +231,7 @@ export default defineComponent({
     const hovering = ref(false);
 
     const applyHandleHoverClass = computed((): boolean => {
-      if (holding.value) {
+      if (store.holding.value) {
         return true;
       } else {
         return hovering.value;
@@ -347,13 +252,13 @@ export default defineComponent({
         typeof props.formatTooltip === "function"
       ) {
         stringValue = props.formatTooltip(
-          formattedSliderValue.value ||
-            formatModelValue(modelValueUnrounded.value)
+          store.formattedSliderValue.value ||
+            formatModelValue(store.modelValueUnrounded.value)
         );
       } else {
         stringValue = (
-          formattedSliderValue.value ||
-          formatModelValue(modelValueUnrounded.value)
+          store.formattedSliderValue.value ||
+          formatModelValue(store.modelValueUnrounded.value)
         ).toString();
       }
 
@@ -395,31 +300,28 @@ export default defineComponent({
         }
       } else {
         if (!width) {
-          width = 14 + formattedSliderValue.value.toString().length * 9;
+          width = 14 + store.formattedSliderValue.value.toString().length * 9;
         } else {
           width += props.height / 3;
         }
       }
 
-      return filledWidth.value - width / 2;
+      return store.filledWidth.value - width / 2;
     });
 
     // calculate stroke offset for circular slider
     const circumference = computed(() => {
-      if (!slider.value) return 1;
+      if (!store.slider.value) return 1;
 
-      return 2 * Math.PI * (sliderWidth.value / 2);
+      return 2 * Math.PI * (store.sliderWidth.value / 2);
     });
 
     const strokeOffset = computed(() => {
       return (
-        ((sliderRange.value - modelValueUnrounded.value) / sliderRange.value) *
+        ((store.sliderRange.value - store.modelValueUnrounded.value) /
+          store.sliderRange.value) *
         circumference.value
       );
-    });
-
-    const sliderValueDegrees = computed(() => {
-      return modelValueUnrounded.value / (sliderRange.value / 360);
     });
 
     onMounted(() => {
@@ -441,9 +343,9 @@ export default defineComponent({
 
     return {
       updateModelValue,
-      filledWidth,
-      slider,
-      holding,
+      filledWidth: store.filledWidth,
+      slider: store.slider,
+      holding: store.holding,
       startSlide,
       handleFocus,
       applyHandleHoverClass,
@@ -455,7 +357,7 @@ export default defineComponent({
       vars,
       circumference,
       strokeOffset,
-      sliderValueDegrees,
+      sliderValueDegrees: store.sliderValueDegrees,
     };
   },
 });
