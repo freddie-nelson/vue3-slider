@@ -12,8 +12,12 @@ import props from "./props";
 
 import { useStore } from "@/store";
 
-import useDragEnd from "./listeners/useDragEnd";
-import useDragging from "./listeners/useDragging";
+import useDragEnd from "@/listeners/useDragEnd";
+import useDragging from "@/listeners/useDragging";
+import {
+  useFilledWidthObserver,
+  useTooltipObserver,
+} from "@/listeners/observers";
 
 import calcSliderValue from "@/utils/calcSliderValue";
 
@@ -21,6 +25,18 @@ export default defineComponent({
   name: "vue3-slider",
   props,
   setup(props, { emit }) {
+    // error checking
+    if (props.modelValue < props.min || props.modelValue > props.max) {
+      console.error("[Vue3Slider] Error: value exceeds limits of slider");
+    }
+
+    // validate min and max
+    if (props.max <= props.min) {
+      console.error(
+        "[Vue3Slider] Error: Max value cannot be less than or equal to the min value. This will cause unexpected errors to occur, please fix."
+      );
+    }
+
     // setup store values
     const store = useStore(props);
 
@@ -42,17 +58,6 @@ export default defineComponent({
         updateModelValue(newValue);
       }
     });
-
-    if (props.modelValue < props.min || props.modelValue > props.max) {
-      console.error("[Vue3Slider] Error: value exceeds limits of slider");
-    }
-
-    // validate min and max
-    if (props.max <= props.min) {
-      console.error(
-        "[Vue3Slider] Error: Max value cannot be less than or equal to the min value. This will cause unexpected errors to occur, please fix."
-      );
-    }
 
     // Update model value functions
     const formatModelValue = (val: number): number => {
@@ -78,51 +83,6 @@ export default defineComponent({
       emit("change", store.formattedSliderValue.value);
     };
 
-    const getNewFilledWidth = (): number => {
-      const slider = store.slider;
-      if (!slider.value) return 0;
-
-      const sliderWidth =
-        props.orientation === "vertical"
-          ? slider.value.clientHeight
-          : slider.value.clientWidth;
-      store.pixelsPerStep.value = sliderWidth / store.sliderRange.value;
-
-      // clamp value between 0 and the maximum width of the slider
-      const clamped = Math.max(
-        Math.min(
-          store.modelValueUnrounded.value * store.pixelsPerStep.value,
-          sliderWidth
-        ),
-        0
-      );
-
-      return clamped;
-    };
-
-    // start resize observer so that filled width is responsive
-    const initObserver = () => {
-      const observer = new ResizeObserver((entries: any) => {
-        store.filledWidth.value = getNewFilledWidth();
-        store.sliderWidth.value = store.slider.value
-          ? props.orientation === "vertical"
-            ? store.slider.value.clientHeight
-            : store.slider.value.clientWidth
-          : 0;
-
-        if (store.slider?.value !== entries[0].target) {
-          observer.unobserve(entries[0].target);
-          observer.observe(store.slider.value);
-        }
-      });
-
-      observer.observe(store.slider.value);
-    };
-
-    watchEffect(() => {
-      store.filledWidth.value = getNewFilledWidth();
-    });
-
     // Handle dragging slider
     const startSlide = (e: MouseEvent | TouchEvent) => {
       e.preventDefault();
@@ -131,19 +91,14 @@ export default defineComponent({
       emit("drag-start", store.formattedSliderValue.value, e);
 
       if (e.type === "touchstart") {
-        // do initial slider calculation
-        if ((e as TouchEvent).touches.length > 1) return;
-        const touch = (e as TouchEvent).touches[0];
+        e = <TouchEvent>e;
+        if (e.touches.length > 1) return;
+        const t = e.touches[0];
 
-        const value = calcSliderValue(
-          store,
-          props.orientation,
-          props.repeat,
-          touch.pageX,
-          touch.pageY,
-          false
+        // do initial slider calculation
+        updateModelValue(
+          calcSliderValue(store, props, t.pageX, t.pageY, false)
         );
-        updateModelValue(value);
 
         // add event listeners
         window.addEventListener("touchend", (e: TouchEvent) =>
@@ -151,26 +106,15 @@ export default defineComponent({
         );
 
         window.addEventListener("touchmove", (e: TouchEvent) =>
-          useDragging(
-            store,
-            e,
-            emit,
-            props.orientation,
-            props.repeat,
-            updateModelValue
-          )
+          useDragging(store, props, e, emit, updateModelValue)
         );
       } else {
+        e = <MouseEvent>e;
+
         // do initial slider calculation
-        const value = calcSliderValue(
-          store,
-          props.orientation,
-          props.repeat,
-          (e as MouseEvent).pageX,
-          (e as MouseEvent).pageY,
-          false
+        updateModelValue(
+          calcSliderValue(store, props, e.pageX, e.pageY, false)
         );
-        updateModelValue(value);
 
         // add event listeners
         window.addEventListener("mouseup", (e: MouseEvent) =>
@@ -178,14 +122,7 @@ export default defineComponent({
         );
 
         window.addEventListener("mousemove", (e: MouseEvent) =>
-          useDragging(
-            store,
-            e,
-            emit,
-            props.orientation,
-            props.repeat,
-            updateModelValue
-          )
+          useDragging(store, props, e, emit, updateModelValue)
         );
       }
     };
@@ -268,21 +205,6 @@ export default defineComponent({
     // watch tooltip width
     const tooltipWidth = ref(0);
 
-    const initTooltipObserver = () => {
-      const observer = new ResizeObserver((entries: any) => {
-        if (tooltip.value) {
-          tooltipWidth.value = tooltip.value.clientWidth;
-
-          if (tooltip.value !== entries[0].target) {
-            observer.unobserve(entries[0].target);
-            observer.observe(tooltip.value);
-          }
-        }
-      });
-
-      if (tooltip.value) observer.observe(tooltip.value);
-    };
-
     // calculate tooltip offset
     const tooltipOffset = computed(() => {
       let width: number | undefined = tooltipWidth.value;
@@ -324,12 +246,6 @@ export default defineComponent({
       );
     });
 
-    onMounted(() => {
-      // start resize observer when component loads
-      initObserver();
-      initTooltipObserver();
-    });
-
     const vars = computed(() => {
       return {
         "--width": props.width,
@@ -341,8 +257,13 @@ export default defineComponent({
       };
     });
 
+    // start observers when component loads
+    onMounted(() => {
+      useFilledWidthObserver(store, props);
+      useTooltipObserver(tooltip, tooltipWidth);
+    });
+
     return {
-      updateModelValue,
       filledWidth: store.filledWidth,
       slider: store.slider,
       holding: store.holding,

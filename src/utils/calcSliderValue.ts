@@ -1,9 +1,9 @@
+import { Props } from "@/props";
 import { Store } from "@/store";
 
 export default function(
   store: Store,
-  orientation: string,
-  repeat: boolean,
+  props: Props,
   mouseX: number,
   mouseY: number,
   dragging: boolean
@@ -11,9 +11,9 @@ export default function(
   const rect = store.slider.value.getBoundingClientRect();
   let value = 0;
 
-  if (orientation === "horizontal") {
+  if (props.orientation === "horizontal") {
     value = (mouseX - rect.x) / store.pixelsPerStep.value;
-  } else if (orientation === "vertical") {
+  } else if (props.orientation === "vertical") {
     value = (rect.y + rect.height - mouseY) / store.pixelsPerStep.value;
   } else {
     const sliderX = mouseX - rect.x;
@@ -53,7 +53,7 @@ export default function(
     value = angle * (store.sliderRange.value / 360);
 
     // stop value from going to 0 when at max
-    if (!repeat && dragging) {
+    if (!props.repeat && dragging) {
       const diff = Math.abs(angle - store.sliderValueDegrees.value);
       if (diff > 30) {
         return store.modelValueUnrounded.value;
