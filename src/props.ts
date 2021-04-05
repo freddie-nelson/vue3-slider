@@ -1,5 +1,22 @@
 import validateLength from "./utils/validateLength";
 
+export type Props = Readonly<{
+  width: string;
+  height: number;
+  color: string;
+  trackColor: string;
+  max: number;
+  min: number;
+  step: number;
+  tooltip: boolean;
+  tooltipText: string;
+  tooltipColor: string;
+  tooltipTextColor: string;
+  orientation: string;
+  modelValue: number;
+  repeat: boolean;
+}>;
+
 export default {
   width: {
     type: String,

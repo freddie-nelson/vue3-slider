@@ -1,5 +1,7 @@
 import { ref, computed, Ref, ComputedRef } from "vue";
 
+import { Props } from "@/props";
+
 export interface Store {
   slider: Ref<HTMLDivElement>;
   modelValueUnrounded: Ref<number>;
@@ -12,7 +14,7 @@ export interface Store {
   holding: Ref<boolean>;
 }
 
-export function useStore(props: any): Store {
+export function useStore(props: Props): Store {
   // slider dom ref
   const slider = ref(document.createElement("div"));
 
