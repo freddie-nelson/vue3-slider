@@ -35,7 +35,11 @@ export default defineComponent({
       props,
       emit
     );
-    const { handleFocus } = useKeyBoardControls(store, props, updateModelValue);
+    const { handleKeydown } = useKeyBoardControls(
+      store,
+      props,
+      updateModelValue
+    );
     const { clickHandler } = useDragHandler(
       store,
       props,
@@ -147,7 +151,7 @@ export default defineComponent({
       slider: store.slider,
       holding: store.holding,
       clickHandler,
-      handleFocus,
+      handleKeydown,
       applyHandleHoverClass,
       hovering,
       showTooltip: computed(() => props.tooltip),
@@ -175,7 +179,7 @@ export default defineComponent({
     @mousedown="clickHandler"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
-    @focus="handleFocus"
+    @keydown="handleKeydown"
   >
     <transition name="fade">
       <div
@@ -211,7 +215,7 @@ export default defineComponent({
     @mousedown="clickHandler"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
-    @focus="handleFocus"
+    @keydown="handleKeydown"
   >
     <transition name="fade">
       <div
@@ -247,7 +251,7 @@ export default defineComponent({
     @mousedown="clickHandler"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
-    @focus="handleFocus"
+    @keydown="handleKeydown"
   >
     <svg
       width="100%"

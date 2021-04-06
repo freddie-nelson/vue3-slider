@@ -14,31 +14,22 @@ export default function(store: Store, props: Props, updateModelValue: (val: numb
     }
   };
 
-  let isFocusHandlerAdded = false;
-  const handleFocus = () => {
-    if (isFocusHandlerAdded) {
-      return;
+  const handleKeydown = (e: KeyboardEvent) => {
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowUp":
+        calculateValueFromDiff(props.step);
+        break;
+      case "ArrowLeft":
+      case "ArrowDown":
+        calculateValueFromDiff(-props.step);
+        break;
+      default:
+        break;
     }
-
-    isFocusHandlerAdded = true;
-
-    store.slider.value.addEventListener("keydown", (e: KeyboardEvent) => {
-      switch (e.key) {
-        case "ArrowRight":
-        case "ArrowUp":
-          calculateValueFromDiff(props.step);
-          break;
-        case "ArrowLeft":
-        case "ArrowDown":
-          calculateValueFromDiff(-props.step);
-          break;
-        default:
-          break;
-      }
-    });
   };
 
   return {
-    handleFocus,
+    handleKeydown,
   };
 }
