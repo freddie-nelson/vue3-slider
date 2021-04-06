@@ -1,23 +1,15 @@
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  watchEffect,
-  computed,
-  onMounted,
-  watch,
-} from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 
 import props from "./props";
 
 import { useStore } from "@/store";
 
-import useDragEnd from "@/listeners/useDragEnd";
-import useDragging from "@/listeners/useDragging";
-import {
-  useFilledWidthObserver,
-  useTooltipObserver,
-} from "@/listeners/observers";
+import useDragEnd from "@/hooks/useDragEnd";
+import useDragging from "@/hooks/useDragging";
+import { useFilledWidthObserver, useTooltipObserver } from "@/hooks/observers";
+import useKeyBoardControls from "@/hooks/useKeyboardControls";
+import useModelValue from "@/hooks/useModelValue";
 
 import calcSliderValue from "@/utils/calcSliderValue";
 
@@ -40,48 +32,13 @@ export default defineComponent({
     // setup store values
     const store = useStore(props);
 
-    // watchers to update slider value if modelValue is changed from outside component
-    const modelValueRef = ref(props.modelValue);
-    watchEffect(() => (modelValueRef.value = props.modelValue));
-
-    watch(modelValueRef, (val) => {
-      if (store.formattedSliderValue.value !== val) {
-        let newValue = 0;
-        if (props.min < 0) {
-          newValue = val + Math.abs(props.min);
-        } else {
-          newValue = val - props.min;
-        }
-        if (newValue > store.sliderRange.value)
-          newValue = store.sliderRange.value;
-
-        updateModelValue(newValue);
-      }
-    });
-
-    // Update model value functions
-    const formatModelValue = (val: number): number => {
-      const step = props.step;
-
-      let roundedVal = 0;
-
-      // round number to the nearest multiple of step (round up or down)
-      if (val > 0) {
-        roundedVal = Math.round(val / step) * step;
-      } else {
-        roundedVal = 0;
-      }
-
-      return roundedVal + props.min;
-    };
-
-    const updateModelValue = (val: number): void => {
-      store.modelValueUnrounded.value = val;
-      store.formattedSliderValue.value = formatModelValue(val);
-
-      emit("update:modelValue", store.formattedSliderValue.value);
-      emit("change", store.formattedSliderValue.value);
-    };
+    // setup hooks
+    const { updateModelValue, formatModelValue } = useModelValue(
+      store,
+      props,
+      emit
+    );
+    const { handleFocus } = useKeyBoardControls(store, props, updateModelValue);
 
     // Handle dragging slider
     const startSlide = (e: MouseEvent | TouchEvent) => {
@@ -125,43 +82,6 @@ export default defineComponent({
           useDragging(store, props, e, emit, updateModelValue)
         );
       }
-    };
-
-    // handle keyboard controls
-    const calculateValueFromDiff = (diff: number) => {
-      const newVal = store.modelValueUnrounded.value + diff;
-
-      if (newVal <= 0) {
-        updateModelValue(0);
-      } else if (newVal >= store.sliderRange.value) {
-        updateModelValue(store.sliderRange.value);
-      } else {
-        updateModelValue(newVal);
-      }
-    };
-
-    const handleFocus = () => {
-      const slider = store.slider;
-      if (slider.value.onkeydown) {
-        return;
-      }
-
-      slider.value.onkeydown = null;
-
-      slider.value.addEventListener("keydown", (e: KeyboardEvent) => {
-        switch (e.key) {
-          case "ArrowRight":
-          case "ArrowUp":
-            calculateValueFromDiff(props.step);
-            break;
-          case "ArrowLeft":
-          case "ArrowDown":
-            calculateValueFromDiff(-props.step);
-            break;
-          default:
-            break;
-        }
-      });
     };
 
     // Apply hover styles to handle
