@@ -5,13 +5,10 @@ import props from "./props";
 
 import { useStore } from "@/store";
 
-import useDragEnd from "@/hooks/useDragEnd";
-import useDragging from "@/hooks/useDragging";
 import { useFilledWidthObserver, useTooltipObserver } from "@/hooks/observers";
 import useKeyBoardControls from "@/hooks/useKeyboardControls";
 import useModelValue from "@/hooks/useModelValue";
-
-import calcSliderValue from "@/utils/calcSliderValue";
+import useDragHandler from "@/hooks/useDragHandler";
 
 export default defineComponent({
   name: "vue3-slider",
@@ -39,50 +36,12 @@ export default defineComponent({
       emit
     );
     const { handleFocus } = useKeyBoardControls(store, props, updateModelValue);
-
-    // Handle dragging slider
-    const startSlide = (e: MouseEvent | TouchEvent) => {
-      e.preventDefault();
-
-      store.holding.value = true;
-      emit("drag-start", store.formattedSliderValue.value, e);
-
-      if (e.type === "touchstart") {
-        e = <TouchEvent>e;
-        if (e.touches.length > 1) return;
-        const t = e.touches[0];
-
-        // do initial slider calculation
-        updateModelValue(
-          calcSliderValue(store, props, t.pageX, t.pageY, false)
-        );
-
-        // add event listeners
-        window.addEventListener("touchend", (e: TouchEvent) =>
-          useDragEnd(store, e, emit)
-        );
-
-        window.addEventListener("touchmove", (e: TouchEvent) =>
-          useDragging(store, props, e, emit, updateModelValue)
-        );
-      } else {
-        e = <MouseEvent>e;
-
-        // do initial slider calculation
-        updateModelValue(
-          calcSliderValue(store, props, e.pageX, e.pageY, false)
-        );
-
-        // add event listeners
-        window.addEventListener("mouseup", (e: MouseEvent) =>
-          useDragEnd(store, e, emit)
-        );
-
-        window.addEventListener("mousemove", (e: MouseEvent) =>
-          useDragging(store, props, e, emit, updateModelValue)
-        );
-      }
-    };
+    const { clickHandler } = useDragHandler(
+      store,
+      props,
+      emit,
+      updateModelValue
+    );
 
     // Apply hover styles to handle
     const hovering = ref(false);
@@ -187,7 +146,7 @@ export default defineComponent({
       filledWidth: store.filledWidth,
       slider: store.slider,
       holding: store.holding,
-      startSlide,
+      clickHandler,
       handleFocus,
       applyHandleHoverClass,
       hovering,
@@ -212,8 +171,8 @@ export default defineComponent({
     class="vue3-slider"
     tabindex="0"
     ref="slider"
-    @touchstart="startSlide"
-    @mousedown="startSlide"
+    @touchstart="clickHandler"
+    @mousedown="clickHandler"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
     @focus="handleFocus"
@@ -248,8 +207,8 @@ export default defineComponent({
     class="vue3-slider vertical"
     tabindex="0"
     ref="slider"
-    @touchstart="startSlide"
-    @mousedown="startSlide"
+    @touchstart="clickHandler"
+    @mousedown="clickHandler"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
     @focus="handleFocus"
@@ -284,8 +243,8 @@ export default defineComponent({
     tabindex="0"
     ref="slider"
     :style="{ ...vars }"
-    @touchstart="startSlide"
-    @mousedown="startSlide"
+    @touchstart="clickHandler"
+    @mousedown="clickHandler"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
     @focus="handleFocus"
