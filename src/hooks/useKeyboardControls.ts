@@ -14,15 +14,15 @@ export default function(store: Store, props: Props, updateModelValue: (val: numb
     }
   };
 
+  let isFocusHandlerAdded = false;
   const handleFocus = () => {
-    const slider = store.slider;
-    if (slider.value.onkeydown) {
+    if (isFocusHandlerAdded) {
       return;
     }
 
-    slider.value.onkeydown = null;
+    isFocusHandlerAdded = true;
 
-    slider.value.addEventListener("keydown", (e: KeyboardEvent) => {
+    store.slider.value.addEventListener("keydown", (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowRight":
         case "ArrowUp":
