@@ -38,17 +38,14 @@ export default {
   max: {
     type: Number,
     default: 100,
-    required: true,
   },
   min: {
     type: Number,
     default: 0,
-    required: true,
   },
   step: {
     type: Number,
     default: 1,
-    required: true,
     validator(val: number) {
       if (val !== 0) {
         return true;
