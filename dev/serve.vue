@@ -217,7 +217,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 325px;
+  height: 345px;
   opacity: 1;
 }
 
