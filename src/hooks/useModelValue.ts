@@ -1,6 +1,6 @@
 import { Props } from "@/props";
 import { Store } from "@/store";
-import { ref, SetupContext, watch, watchEffect } from "@vue/runtime-core";
+import { ref, SetupContext, watch, watchEffect } from "vue";
 
 export default function(store: Store, props: Props, emit: SetupContext["emit"]) {
   // watchers to update slider value if modelValue is changed from outside component
@@ -49,5 +49,6 @@ export default function(store: Store, props: Props, emit: SetupContext["emit"]) 
   return {
     formatModelValue,
     updateModelValue,
+    modelValueRef,
   };
 }

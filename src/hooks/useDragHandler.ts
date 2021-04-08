@@ -1,6 +1,6 @@
 import { Props } from "@/props";
 import { Store } from "@/store";
-import { SetupContext } from "@vue/runtime-core";
+import { SetupContext } from "vue";
 
 export default function(
   store: Store,

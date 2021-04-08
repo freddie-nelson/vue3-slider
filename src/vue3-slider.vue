@@ -30,7 +30,7 @@ export default defineComponent({
     const store = useStore(props);
 
     // setup hooks
-    const { updateModelValue, formatModelValue } = useModelValue(
+    const { updateModelValue, formatModelValue, modelValueRef } = useModelValue(
       store,
       props,
       emit
@@ -162,6 +162,7 @@ export default defineComponent({
       circumference,
       strokeOffset,
       sliderValueDegrees: store.sliderValueDegrees,
+      modelValueRef, // temp
     };
   },
 });
