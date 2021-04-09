@@ -21,6 +21,8 @@ export default defineComponent({
       tooltipText: "%v",
       orientation: "horizontal",
       colorShift: false,
+      sticky: false,
+      repeat: false,
     };
   },
   methods: {
@@ -149,6 +151,16 @@ export default defineComponent({
         <input type="checkbox" name="colorShift" v-model="colorShift" />
       </div>
 
+      <div class="item">
+        <h2>repeat:</h2>
+        <input type="checkbox" name="repeat" v-model="repeat" />
+      </div>
+
+      <div class="item">
+        <h2>sticky:</h2>
+        <input type="checkbox" name="sticky" v-model="sticky" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -165,12 +177,13 @@ export default defineComponent({
     :height="height"
     :tooltip="tooltip"
     :width="width + 'px'"
-    :repeat="false"
     :min="min"
     :max="max"
     :step="step"
     :tooltipText="tooltipText"
     :orientation="orientation"
+    :repeat="repeat"
+    :sticky="sticky"
   />
   <h1>{{ sliderVal }}</h1>
 </template>
@@ -217,7 +230,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 345px;
+  height: 420px;
   opacity: 1;
 }
 
