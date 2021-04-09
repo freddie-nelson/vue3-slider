@@ -39,8 +39,14 @@ export default function(store: Store, props: Props, emit: SetupContext["emit"]) 
 
   // update model value and related refs
   const updateModelValue = (val: number): void => {
-    store.modelValueUnrounded.value = val;
     store.formattedSliderValue.value = formatModelValue(val);
+
+    // make slider stick to nearest multiple of step
+    if (props.sticky) {
+      store.modelValueUnrounded.value = store.formattedSliderValue.value - props.min;
+    } else {
+      store.modelValueUnrounded.value = val;
+    }
 
     emit("update:modelValue", store.formattedSliderValue.value);
     emit("change", store.formattedSliderValue.value);

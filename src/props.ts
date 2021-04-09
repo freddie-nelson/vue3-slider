@@ -15,6 +15,7 @@ export type Props = Readonly<{
   orientation: string;
   modelValue: number;
   repeat: boolean;
+  sticky: boolean;
 }>;
 
 export default {
@@ -105,6 +106,10 @@ export default {
     required: true,
   },
   repeat: {
+    type: Boolean,
+    default: false,
+  },
+  sticky: {
     type: Boolean,
     default: false,
   },
