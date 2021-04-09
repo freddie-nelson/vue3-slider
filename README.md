@@ -73,6 +73,7 @@ export default {
 | formatTooltip    | Function |          | null       | function must take one parameter (number) and return a string |
 | orientation      | String   |          | horizontal | restricted choice (horizontal, vertical, circular)            |
 | repeat           | Boolean  |          | false      |                                                               |
+| sticky           | Boolean  |          | false      |                                                               |
 
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
 
