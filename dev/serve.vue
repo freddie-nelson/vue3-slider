@@ -23,6 +23,7 @@ export default defineComponent({
       colorShift: false,
       sticky: false,
       repeat: false,
+      flip: false,
     };
   },
   methods: {
@@ -161,6 +162,11 @@ export default defineComponent({
         <input type="checkbox" name="sticky" v-model="sticky" />
       </div>
 
+      <div class="item">
+        <h2>flip:</h2>
+        <input type="checkbox" name="flip" v-model="flip" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -184,6 +190,7 @@ export default defineComponent({
     :orientation="orientation"
     :repeat="repeat"
     :sticky="sticky"
+    :flip="flip"
   />
   <h1>{{ sliderVal }}</h1>
 </template>
@@ -230,7 +237,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 420px;
+  height: 460px;
   opacity: 1;
 }
 
