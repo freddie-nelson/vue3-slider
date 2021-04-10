@@ -150,6 +150,7 @@ export default defineComponent({
       filledWidth: store.filledWidth,
       slider: store.slider,
       holding: store.holding,
+      flip: computed(() => props.flip),
       clickHandler,
       handleKeydown,
       applyHandleHoverClass,
@@ -188,7 +189,11 @@ export default defineComponent({
         ref="tooltip"
         v-show="showTooltip && (hovering || holding)"
         :style="{
-          transform: `translate(${tooltipOffset}px)`,
+          transform: flip
+            ? `translate(${-tooltipOffset}px)`
+            : `translate(${tooltipOffset}px)`,
+          right: flip ? '0px' : undefined,
+          left: flip ? 'auto' : undefined,
           bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))`,
         }"
       >
@@ -197,10 +202,19 @@ export default defineComponent({
     </transition>
 
     <div class="track" />
-    <div class="track-filled" :style="{ width: filledWidth + 'px' }" />
+    <div
+      class="track-filled"
+      :style="{
+        width: filledWidth + 'px',
+        right: flip ? '0px' : undefined,
+        left: flip ? 'auto' : undefined,
+      }"
+    />
     <div
       class="handle"
-      :style="{ left: filledWidth - (height * 1.35) / 2 + 'px' }"
+      :style="{
+        [flip ? 'right' : 'left']: filledWidth - (height * 1.35) / 2 + 'px',
+      }"
       :class="{ hover: applyHandleHoverClass }"
     />
   </div>
@@ -224,7 +238,11 @@ export default defineComponent({
         ref="tooltip"
         v-show="showTooltip && (hovering || holding)"
         :style="{
-          transform: `translateY(${-tooltipOffset}px)`,
+          transform: flip
+            ? `translateY(${tooltipOffset}px)`
+            : `translateY(${-tooltipOffset}px)`,
+          top: flip ? '0px' : undefined,
+          bottom: flip ? 'auto' : undefined,
           left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))`,
         }"
       >
@@ -233,10 +251,19 @@ export default defineComponent({
     </transition>
 
     <div class="track" />
-    <div class="track-filled" :style="{ height: filledWidth + 'px' }" />
+    <div
+      class="track-filled"
+      :style="{
+        height: filledWidth + 'px',
+        top: flip ? '0px' : undefined,
+        bottom: flip ? 'auto' : undefined,
+      }"
+    />
     <div
       class="handle"
-      :style="{ bottom: filledWidth - (height * 1.35) / 2 + 'px' }"
+      :style="{
+        [flip ? 'top' : 'bottom']: filledWidth - (height * 1.35) / 2 + 'px',
+      }"
       :class="{ hover: applyHandleHoverClass }"
     />
   </div>

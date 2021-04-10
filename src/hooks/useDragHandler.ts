@@ -14,8 +14,14 @@ export default function(
 
     if (props.orientation === "horizontal") {
       value = (mouseX - rect.x) / store.pixelsPerStep.value;
+      if (props.flip) {
+        value = store.sliderRange.value - value;
+      }
     } else if (props.orientation === "vertical") {
       value = (rect.y + rect.height - mouseY) / store.pixelsPerStep.value;
+      if (props.flip) {
+        value = store.sliderRange.value - value;
+      }
     } else {
       const sliderX = mouseX - rect.x;
       const sliderY = mouseY - rect.y;

@@ -16,6 +16,7 @@ export type Props = Readonly<{
   modelValue: number;
   repeat: boolean;
   sticky: boolean;
+  flip: boolean;
 }>;
 
 export default {
@@ -110,6 +111,10 @@ export default {
     default: false,
   },
   sticky: {
+    type: Boolean,
+    default: false,
+  },
+  flip: {
     type: Boolean,
     default: false,
   },
