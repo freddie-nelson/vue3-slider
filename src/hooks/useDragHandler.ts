@@ -63,6 +63,9 @@ export default function(
       if (value < 0) {
         value += store.sliderRange.value;
       }
+      if (props.flip) {
+        value = store.sliderRange.value - value;
+      }
 
       // stop value from going to 0 when at max
       if (!props.repeat && dragging) {

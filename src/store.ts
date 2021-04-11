@@ -41,7 +41,8 @@ export function useStore(props: Props): Store {
   });
 
   const sliderValueDegrees = computed(() => {
-    return modelValueUnrounded.value / (sliderRange.value / 360);
+    const degrees = modelValueUnrounded.value / (sliderRange.value / 360);
+    return props.flip ? -degrees : degrees;
   });
 
   const holding = ref(false);

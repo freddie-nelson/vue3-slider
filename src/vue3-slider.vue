@@ -298,7 +298,11 @@ export default defineComponent({
       ></circle>
 
       <circle
-        :style="{ transform: `rotate(${-90 + circleOffset}deg)` }"
+        :style="{
+          transform: `rotate(${-90 + circleOffset}deg) ${
+            flip ? 'scaleY(-1)' : ''
+          }`,
+        }"
         style="transform-origin: center"
         stroke="var(--color)"
         vector-effect="non-scaling-stroke"
