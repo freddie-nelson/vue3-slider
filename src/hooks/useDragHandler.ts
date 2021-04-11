@@ -67,7 +67,7 @@ export default function(
       // stop value from going to 0 when at max
       if (!props.repeat && dragging) {
         const diff = Math.abs(value - previousSliderValue);
-        if (diff > store.sliderRange.value / 10) {
+        if (diff > valPerDeg * 30) {
           value = previousSliderValue;
         }
       }
