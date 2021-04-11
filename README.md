@@ -75,10 +75,13 @@ export default {
 | repeat           | Boolean  |          | false      |                                                               |
 | sticky           | Boolean  |          | false      |                                                               |
 | flip             | Boolean  |          | false      |                                                               |
+| circleOffset     | Number   |          | 0          | must be between 0 and 360 (inclusive)                         |
 
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
 
 **NOTE: When using the circular slider it is advised to use absolute units for width to avoid issues**
+
+**NOTE: circleOffset is calculated in degrees clockwise from the top of the circle (anti-clockwise with flip set to true)**
 
 ## Events
 
