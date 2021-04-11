@@ -24,6 +24,7 @@ export default defineComponent({
       sticky: false,
       repeat: false,
       flip: false,
+      circleOffset: 0,
     };
   },
   methods: {
@@ -129,6 +130,23 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>circle offset:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="circleOffset"
+          tooltip
+          :height="8"
+          :min="0"
+          :max="360"
+          :step="1"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#005CC8"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
         <h2>tooltip:</h2>
         <input type="checkbox" name="tooltip" v-model="tooltip" />
       </div>
@@ -191,6 +209,7 @@ export default defineComponent({
     :repeat="repeat"
     :sticky="sticky"
     :flip="flip"
+    :circleOffset="circleOffset"
   />
   <h1>{{ sliderVal }}</h1>
 </template>
@@ -237,7 +256,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 460px;
+  height: 515px;
   opacity: 1;
 }
 
