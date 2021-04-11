@@ -30,7 +30,7 @@ export default defineComponent({
     const store = useStore(props);
 
     // setup hooks
-    const { updateModelValue, formatModelValue, modelValueRef } = useModelValue(
+    const { updateModelValue, formatModelValue } = useModelValue(
       store,
       props,
       emit
@@ -162,8 +162,8 @@ export default defineComponent({
       vars,
       circumference,
       strokeOffset,
+      circleOffset: computed(() => props.circleOffset),
       sliderValueDegrees: store.sliderValueDegrees,
-      modelValueRef, // temp
     };
   },
 });
@@ -298,7 +298,8 @@ export default defineComponent({
       ></circle>
 
       <circle
-        style="transform: rotate(-90deg); transform-origin: center"
+        :style="{ transform: `rotate(${-90 + circleOffset}deg)` }"
+        style="transform-origin: center"
         stroke="var(--color)"
         vector-effect="non-scaling-stroke"
         fill="none"
@@ -311,11 +312,16 @@ export default defineComponent({
       ></circle>
     </svg>
 
-    <div class="handle round-end" />
+    <div
+      class="handle-container"
+      :style="{ transform: `rotate(${circleOffset}deg)` }"
+    >
+      <div class="handle round-end" />
+    </div>
 
     <div
       class="handle-container"
-      :style="{ transform: `rotate(${sliderValueDegrees}deg)` }"
+      :style="{ transform: `rotate(${sliderValueDegrees + circleOffset}deg)` }"
     >
       <div class="handle" :class="{ hover: applyHandleHoverClass }" />
 
@@ -325,7 +331,7 @@ export default defineComponent({
           ref="tooltip"
           v-show="showTooltip && (hovering || holding)"
           :style="{
-            transform: `rotate(${-sliderValueDegrees}deg)`,
+            transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
             top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
           }"
         >

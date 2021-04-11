@@ -8,6 +8,7 @@ export default function(
   emit: SetupContext["emit"],
   updateModelValue: (val: number) => void
 ) {
+  let previousSliderValue = store.formattedSliderValue.value;
   const calcSliderValue = (mouseX: number, mouseY: number, dragging: boolean): number => {
     const rect = store.slider.value.getBoundingClientRect();
     let value = 0;
@@ -57,16 +58,22 @@ export default function(
         }
       }
 
-      value = angle * (store.sliderRange.value / 360);
+      const valPerDeg = store.sliderRange.value / 360;
+      value = angle * valPerDeg - props.circleOffset * valPerDeg;
+      if (value < 0) {
+        value += store.sliderRange.value;
+      }
 
       // stop value from going to 0 when at max
       if (!props.repeat && dragging) {
-        const diff = Math.abs(angle - store.sliderValueDegrees.value);
-        if (diff > 30) {
-          return store.modelValueUnrounded.value;
+        const diff = Math.abs(value - previousSliderValue);
+        if (diff > store.sliderRange.value / 10) {
+          value = previousSliderValue;
         }
       }
     }
+
+    previousSliderValue = value;
 
     return value;
   };
