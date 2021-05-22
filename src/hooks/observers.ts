@@ -23,7 +23,7 @@ export function useFilledWidthObserver(store: Store, props: Props) {
     }
   });
 
-  observer.observe(store.slider.value);
+  if (store.slider.value) observer.observe(store.slider.value);
 }
 
 function getNewFilledWidth(store: Store, props: Props): number {
