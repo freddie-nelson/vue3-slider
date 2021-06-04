@@ -448,6 +448,8 @@ export default defineComponent({
     padding: 3px 7px;
     border-radius: 4px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
   }
 
   .track {

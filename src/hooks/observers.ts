@@ -50,7 +50,7 @@ export function useTooltipObserver(tooltip: Ref<HTMLDivElement | undefined>, too
 
       if (tooltip.value !== entries[0].target) {
         observer.unobserve(entries[0].target);
-        observer.observe(tooltip.value);
+        if (tooltip.value) observer.observe(tooltip.value);
       }
     }
   });
