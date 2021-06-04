@@ -105,6 +105,31 @@ export default {
 - Arguments: `(value: number, event: MouseEvent | TouchEvent)`
 - Usage: The event is fired when the user drags the slider
 
+## Contributing
+
+### Prerequisites
+
+- node (latest version)
+- yarn (1.^22.10)
+
+### Setup
+
+```bash
+# clone repo
+git clone https://github.com/freddie-nelson/vue3-slider
+cd vue3-slider
+
+# install deps
+npm i
+# with yarn
+yarn
+
+# start dev server
+npm run serve
+# with yarn
+yarn serve
+```
+
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
