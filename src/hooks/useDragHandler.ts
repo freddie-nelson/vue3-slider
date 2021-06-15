@@ -117,11 +117,11 @@ export default function(
     if (store.holding.value) store.holding.value = false;
 
     if (e.type === "mouseup") {
-      window.onmouseup = null;
-      window.onmousemove = null;
+      window.removeEventListener("mouseup", releaseDragHandler);
+      window.removeEventListener("mousemove", draggingHandler);
     } else {
-      window.ontouchend = null;
-      window.ontouchmove = null;
+      window.removeEventListener("touchend", releaseDragHandler);
+      window.removeEventListener("touchmove", draggingHandler);
     }
 
     emit("drag-end", store.formattedSliderValue.value, e);
