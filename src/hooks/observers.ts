@@ -17,7 +17,7 @@ export function useFilledWidthObserver(store: Store, props: Props) {
         : store.slider.value.clientWidth
       : 0;
 
-    if (store.slider?.value !== entries[0].target) {
+    if (store.slider.value !== entries[0].target && store.slider.value instanceof Element) {
       observer.unobserve(entries[0].target);
       observer.observe(store.slider.value);
     }
