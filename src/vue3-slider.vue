@@ -63,6 +63,8 @@ export default defineComponent({
 
     // replace %v with sliders value in tooltip text
     const tooltipText = computed(() => {
+      if (!props.tooltip) return "";
+
       let stringValue = "";
 
       // if format function is provided then use that
@@ -90,6 +92,8 @@ export default defineComponent({
 
     // calculate tooltip offset
     const tooltipOffset = computed(() => {
+      if (!props.tooltip) return 0;
+
       let width: number | undefined = tooltipWidth.value;
 
       // estimate width if it cant be found
@@ -116,12 +120,14 @@ export default defineComponent({
 
     // calculate stroke offset for circular slider
     const circumference = computed(() => {
-      if (!store.slider.value) return 1;
+      if (!store.slider.value || props.orientation !== "circular") return 1;
 
       return 2 * Math.PI * (store.sliderWidth.value / 2);
     });
 
     const strokeOffset = computed(() => {
+      if (props.orientation !== "circular") return 0;
+
       return (
         ((store.sliderRange.value - store.modelValueUnrounded.value) /
           store.sliderRange.value) *

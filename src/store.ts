@@ -41,6 +41,8 @@ export function useStore(props: Props): Store {
   });
 
   const sliderValueDegrees = computed(() => {
+    if (props.orientation !== "circular") return 0;
+
     const degrees = modelValueUnrounded.value / (sliderRange.value / 360);
     return props.flip ? -degrees : degrees;
   });
