@@ -105,7 +105,7 @@ export default function(
         props.orientation === "vertical" ? rect.y + rect.height - tap.pageY : tap.pageX - rect.x;
       tapPosInsideSlider = Math.min(store.sliderWidth.value, Math.max(tapPosInsideSlider, 0));
 
-      updateModelValue(calcSliderValue(tap.pageX, tap.pageY, true));
+      updateModelValue(calcSliderValue(tap.pageX - window.scrollX, tap.pageY - window.scrollY, true));
 
       emit("dragging", store.formattedSliderValue.value, tap);
     }
@@ -138,7 +138,7 @@ export default function(
       const t = e.touches[0];
 
       // do initial slider calculation
-      updateModelValue(calcSliderValue(t.pageX, t.pageY, false));
+      updateModelValue(calcSliderValue(t.pageX - window.scrollX, t.pageY - window.scrollY, false));
 
       // add event listeners
       window.addEventListener("touchend", releaseDragHandler);
@@ -148,7 +148,7 @@ export default function(
       e = <MouseEvent>e;
 
       // do initial slider calculation
-      updateModelValue(calcSliderValue(e.pageX, e.pageY, false));
+      updateModelValue(calcSliderValue(e.pageX - window.scrollX, e.pageY - window.scrollY, false));
 
       // add event listeners
       window.addEventListener("mouseup", releaseDragHandler);
