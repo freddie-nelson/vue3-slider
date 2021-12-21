@@ -76,6 +76,8 @@ export default function(
       }
     }
 
+    value = Math.min(store.sliderRange.value, Math.max(value, 0));
+
     previousSliderValue = value;
 
     return value;
@@ -99,15 +101,11 @@ export default function(
 
     if (store.holding.value) {
       const rect = store.slider.value.getBoundingClientRect();
-      const tapPosInsideSlider =
+      let tapPosInsideSlider =
         props.orientation === "vertical" ? rect.y + rect.height - tap.pageY : tap.pageX - rect.x;
+      tapPosInsideSlider = Math.min(store.sliderWidth.value, Math.max(tapPosInsideSlider, 0));
 
-      if (
-        props.orientation === "circular" ||
-        (tapPosInsideSlider >= 0 && tapPosInsideSlider <= store.sliderWidth.value)
-      ) {
-        updateModelValue(calcSliderValue(tap.pageX, tap.pageY, true));
-      }
+      updateModelValue(calcSliderValue(tap.pageX, tap.pageY, true));
 
       emit("dragging", store.formattedSliderValue.value, tap);
     }
