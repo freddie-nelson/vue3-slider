@@ -7,6 +7,7 @@ export type Props = Readonly<{
   trackColor: string;
   max: number;
   min: number;
+  limit: number,
   step: number;
   tooltip: boolean;
   tooltipText: string;
@@ -45,6 +46,10 @@ export default {
   min: {
     type: Number,
     default: 0,
+  },
+  limit: {
+    type: Number,
+    default: 100,
   },
   step: {
     type: Number,

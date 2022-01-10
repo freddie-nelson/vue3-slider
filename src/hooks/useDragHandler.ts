@@ -80,6 +80,10 @@ export default function(
 
     previousSliderValue = value;
 
+    if(value > props.limit) {
+      return props.limit
+    }
+    
     return value;
   };
 

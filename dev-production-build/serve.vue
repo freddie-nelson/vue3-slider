@@ -16,6 +16,7 @@ export default defineComponent({
       width: 200,
       min: 0,
       max: 100,
+      limit: 50,
       step: 1,
       tooltip: true,
       tooltipText: "%v",
@@ -168,6 +169,7 @@ export default defineComponent({
     :repeat="false"
     :min="min"
     :max="max"
+    :limit="limit"
     :step="step"
     :tooltipText="tooltipText"
     :orientation="orientation"
