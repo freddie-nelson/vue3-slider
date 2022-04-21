@@ -162,6 +162,7 @@ export default defineComponent({
       applyHandleHoverClass,
       hovering,
       showTooltip: computed(() => props.tooltip),
+      alwaysShowTooltip: computed(() => props.alwaysShowTooltip),
       tooltip,
       tooltipText,
       tooltipOffset,
@@ -193,7 +194,7 @@ export default defineComponent({
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="showTooltip && (hovering || holding)"
+        v-show="(showTooltip && (hovering || holding)) || alwaysShowTooltip"
         :style="{
           transform: flip
             ? `translate(${-tooltipOffset}px)`
@@ -242,7 +243,7 @@ export default defineComponent({
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="showTooltip && (hovering || holding)"
+        v-show="(showTooltip && (hovering || holding)) || alwaysShowTooltip"
         :style="{
           transform: flip
             ? `translateY(${tooltipOffset}px)`
@@ -339,7 +340,7 @@ export default defineComponent({
         <div
           class="tooltip"
           ref="tooltip"
-          v-show="showTooltip && (hovering || holding)"
+          v-show="(showTooltip && (hovering || holding)) || alwaysShowTooltip"
           :style="{
             transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
             top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
