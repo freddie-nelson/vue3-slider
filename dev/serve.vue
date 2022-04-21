@@ -25,6 +25,7 @@ export default defineComponent({
       repeat: false,
       flip: false,
       circleOffset: 0,
+      alwaysShowTooltip: false,
     };
   },
   methods: {
@@ -157,6 +158,15 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>alwaysShowTooltip:</h2>
+        <input
+          type="checkbox"
+          name="alwaysShowTooltip"
+          v-model="alwaysShowTooltip"
+        />
+      </div>
+
+      <div class="item">
         <h2>orientation:</h2>
         <select name="orientation" v-model="orientation">
           <option value="horizontal">horizontal</option>
@@ -200,6 +210,7 @@ export default defineComponent({
     v-model="sliderVal"
     :height="height"
     :tooltip="tooltip"
+    :alwaysShowTooltip="alwaysShowTooltip"
     :width="width + 'px'"
     :min="min"
     :max="max"
