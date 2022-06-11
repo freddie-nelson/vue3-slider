@@ -24,6 +24,7 @@ export default defineComponent({
       sticky: false,
       repeat: false,
       flip: false,
+      disabled: false,
       circleOffset: 0,
       alwaysShowTooltip: false,
     };
@@ -195,6 +196,11 @@ export default defineComponent({
         <input type="checkbox" name="flip" v-model="flip" />
       </div>
 
+      <div class="item">
+        <h2>disabled:</h2>
+        <input type="checkbox" name="disabled" v-model="disabled" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -221,6 +227,7 @@ export default defineComponent({
     :sticky="sticky"
     :flip="flip"
     :circleOffset="circleOffset"
+    :disabled="disabled"
   />
   <h1>{{ sliderVal }}</h1>
 </template>
