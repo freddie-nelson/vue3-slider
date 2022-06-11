@@ -20,6 +20,7 @@ export type Props = Readonly<{
   sticky: boolean;
   flip: boolean;
   circleOffset: number;
+  disabled: boolean;
 }>;
 
 export default {
@@ -138,5 +139,9 @@ export default {
     validator(val: number) {
       return val >= 0 && val <= 360;
     },
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 };
