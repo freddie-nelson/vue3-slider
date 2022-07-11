@@ -138,6 +138,5 @@ Copyright © 2020 - Present, Freddie Nelson
 
 ## Contact
 
-- [Send me an email 📧](mailto:freddie0208@hotmail.com)
-- [DM me through twitter](https://twitter.com/freddie_dev)
+- [Send me an email 📧](mailto:freddie@freddienelson.co.uk)
 - [Contact me through my website](https://freddienelson.co.uk)
