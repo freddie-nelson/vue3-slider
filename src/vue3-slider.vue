@@ -75,7 +75,7 @@ export default defineComponent({
       ) {
         stringValue = props.formatTooltip(
           store.formattedSliderValue.value ||
-            formatModelValue(store.modelValueUnrounded.value)
+          formatModelValue(store.modelValueUnrounded.value)
         );
       } else {
         stringValue = (
@@ -143,6 +143,9 @@ export default defineComponent({
         "--track-color": props.trackColor,
         "--tooltip-color": props.tooltipColor,
         "--tooltip-text-color": props.tooltipTextColor,
+        "--dot-width": props.dotWidth + 'px',
+        "--dot-top": (props.height - props.dotWidth) / 2 + 'px',
+        "--magnification": props.magnification
       };
     });
 
@@ -177,190 +180,102 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    v-if="orientation == 'horizontal'"
-    key="horizontal"
-    :style="{ ...vars }"
-    class="vue3-slider"
-    ref="slider"
-    :tabindex="disabled ? undefined : 0"
-    @touchstart="!disabled ? clickHandler($event) : null"
-    @mousedown="!disabled ? clickHandler($event) : null"
-    @mouseenter="!disabled ? (hovering = true) : null"
-    @mouseleave="hovering = false"
-    @keydown="!disabled ? handleKeydown($event) : null"
-    :disabled="disabled ? '' : undefined"
-  >
+  <div v-if="orientation == 'horizontal'" key="horizontal" :style="{ ...vars }" class="vue3-slider" ref="slider"
+    :tabindex="disabled ? undefined : 0" @touchstart="!disabled ? clickHandler($event) : null"
+    @mousedown="!disabled ? clickHandler($event) : null" @mouseenter="!disabled ? (hovering = true) : null"
+    @mouseleave="hovering = false" @keydown="!disabled ? handleKeydown($event) : null"
+    :disabled="disabled ? '' : undefined">
     <transition name="fade">
-      <div
-        class="tooltip"
-        ref="tooltip"
-        v-show="
-          (showTooltip && !disabled && (hovering || holding)) ||
-          alwaysShowTooltip
-        "
-        :style="{
-          transform: flip
-            ? `translate(${-tooltipOffset}px)`
-            : `translate(${tooltipOffset}px)`,
-          right: flip ? '0px' : undefined,
-          left: flip ? 'auto' : undefined,
-          bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))`,
-        }"
-      >
+      <div class="tooltip" ref="tooltip" v-show="
+        (showTooltip && !disabled && (hovering || holding)) ||
+        alwaysShowTooltip
+      " :style="{
+  transform: flip
+    ? `translate(${-tooltipOffset}px)`
+    : `translate(${tooltipOffset}px)`,
+  right: flip ? '0px' : undefined,
+  left: flip ? 'auto' : undefined,
+  bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))`,
+}">
         {{ tooltipText }}
       </div>
     </transition>
 
     <div class="track" />
-    <div
-      class="track-filled"
-      :style="{
-        width: filledWidth + 'px',
-        right: flip ? '0px' : undefined,
-        left: flip ? 'auto' : undefined,
-      }"
-    />
-    <div
-      class="handle"
-      :style="{
-        [flip ? 'right' : 'left']: filledWidth - (height * 1.35) / 2 + 'px',
-      }"
-      :class="{ hover: applyHandleHoverClass && !disabled }"
-    />
+    <div class="track-filled" :style="{
+      width: filledWidth + 'px',
+      right: flip ? '0px' : undefined,
+      left: flip ? 'auto' : undefined,
+    }" />
+    <div class="handle" :style="{
+      [flip ? 'right' : 'left']: filledWidth - (height * 1.35) / 2 + 'px',
+    }" :class="{ hover: applyHandleHoverClass && !disabled }" />
   </div>
 
-  <div
-    v-else-if="orientation == 'vertical'"
-    key="vertical"
-    :style="{ ...vars }"
-    class="vue3-slider vertical"
-    ref="slider"
-    :tabindex="disabled ? undefined : 0"
-    @touchstart="!disabled ? clickHandler($event) : null"
-    @mousedown="!disabled ? clickHandler($event) : null"
-    @mouseenter="!disabled ? (hovering = true) : null"
-    @mouseleave="hovering = false"
-    @keydown="!disabled ? handleKeydown($event) : null"
-    :disabled="disabled ? '' : undefined"
-  >
+  <div v-else-if="orientation == 'vertical'" key="vertical" :style="{ ...vars }" class="vue3-slider vertical"
+    ref="slider" :tabindex="disabled ? undefined : 0" @touchstart="!disabled ? clickHandler($event) : null"
+    @mousedown="!disabled ? clickHandler($event) : null" @mouseenter="!disabled ? (hovering = true) : null"
+    @mouseleave="hovering = false" @keydown="!disabled ? handleKeydown($event) : null"
+    :disabled="disabled ? '' : undefined">
     <transition name="fade">
-      <div
-        class="tooltip"
-        ref="tooltip"
-        v-show="
-          (showTooltip && !disabled && (hovering || holding)) ||
-          alwaysShowTooltip
-        "
-        :style="{
-          transform: flip
-            ? `translateY(${tooltipOffset}px)`
-            : `translateY(${-tooltipOffset}px)`,
-          top: flip ? '0px' : undefined,
-          bottom: flip ? 'auto' : undefined,
-          left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))`,
-        }"
-      >
+      <div class="tooltip" ref="tooltip" v-show="
+        (showTooltip && !disabled && (hovering || holding)) ||
+        alwaysShowTooltip
+      " :style="{
+  transform: flip
+    ? `translateY(${tooltipOffset}px)`
+    : `translateY(${-tooltipOffset}px)`,
+  top: flip ? '0px' : undefined,
+  bottom: flip ? 'auto' : undefined,
+  left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))`,
+}">
         {{ tooltipText }}
       </div>
     </transition>
 
     <div class="track" />
-    <div
-      class="track-filled"
-      :style="{
-        height: filledWidth + 'px',
-        top: flip ? '0px' : undefined,
-        bottom: flip ? 'auto' : undefined,
-      }"
-    />
-    <div
-      class="handle"
-      :style="{
-        [flip ? 'top' : 'bottom']: filledWidth - (height * 1.35) / 2 + 'px',
-      }"
-      :class="{ hover: applyHandleHoverClass && !disabled }"
-    />
+    <div class="track-filled" :style="{
+      height: filledWidth + 'px',
+      top: flip ? '0px' : undefined,
+      bottom: flip ? 'auto' : undefined,
+    }" />
+    <div class="handle" :style="{
+      [flip ? 'top' : 'bottom']: filledWidth - (height * 1.35) / 2 + 'px',
+    }" :class="{ hover: applyHandleHoverClass && !disabled }" />
   </div>
 
-  <div
-    v-else
-    key="circular"
-    class="vue3-slider circular"
-    :style="{ ...vars }"
-    ref="slider"
-    :tabindex="disabled ? undefined : 0"
-    @touchstart="!disabled ? clickHandler($event) : null"
-    @mousedown="!disabled ? clickHandler($event) : null"
-    @mouseenter="!disabled ? (hovering = true) : null"
-    @mouseleave="hovering = false"
-    @keydown="!disabled ? handleKeydown($event) : null"
-    :disabled="disabled ? '' : undefined"
-  >
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 100 100"
-      style="overflow: visible"
-    >
-      <circle
-        stroke="var(--track-color)"
-        vector-effect="non-scaling-stroke"
-        fill="none"
-        stroke-width="var(--height)"
-        r="50%"
-        cx="50"
-        cy="50"
-      ></circle>
+  <div v-else key="circular" class="vue3-slider circular" :style="{ ...vars }" ref="slider"
+    :tabindex="disabled ? undefined : 0" @touchstart="!disabled ? clickHandler($event) : null"
+    @mousedown="!disabled ? clickHandler($event) : null" @mouseenter="!disabled ? (hovering = true) : null"
+    @mouseleave="hovering = false" @keydown="!disabled ? handleKeydown($event) : null"
+    :disabled="disabled ? '' : undefined">
+    <svg width="100%" height="100%" viewBox="0 0 100 100" style="overflow: visible">
+      <circle stroke="var(--track-color)" vector-effect="non-scaling-stroke" fill="none" stroke-width="var(--height)"
+        r="50%" cx="50" cy="50"></circle>
 
-      <circle
-        :style="{
-          transform: `rotate(${-90 + circleOffset}deg) ${
-            flip ? 'scaleY(-1)' : ''
+      <circle :style="{
+        transform: `rotate(${-90 + circleOffset}deg) ${flip ? 'scaleY(-1)' : ''
           }`,
-        }"
-        style="transform-origin: center"
-        stroke="var(--color)"
-        vector-effect="non-scaling-stroke"
-        fill="none"
-        stroke-width="var(--height)"
-        r="50%"
-        cx="50"
-        cy="50"
-        :stroke-dasharray="circumference"
-        :stroke-dashoffset="strokeOffset"
-      ></circle>
+      }" style="transform-origin: center" stroke="var(--color)" vector-effect="non-scaling-stroke" fill="none"
+        stroke-width="var(--height)" r="50%" cx="50" cy="50" :stroke-dasharray="circumference"
+        :stroke-dashoffset="strokeOffset"></circle>
     </svg>
 
-    <div
-      class="handle-container"
-      :style="{ transform: `rotate(${circleOffset}deg)` }"
-    >
+    <div class="handle-container" :style="{ transform: `rotate(${circleOffset}deg)` }">
       <div class="handle round-end" />
     </div>
 
-    <div
-      class="handle-container"
-      :style="{ transform: `rotate(${sliderValueDegrees + circleOffset}deg)` }"
-    >
-      <div
-        class="handle"
-        :class="{ hover: applyHandleHoverClass && !disabled }"
-      />
+    <div class="handle-container" :style="{ transform: `rotate(${sliderValueDegrees + circleOffset}deg)` }">
+      <div class="handle" :class="{ hover: applyHandleHoverClass && !disabled }" />
 
       <transition name="fade">
-        <div
-          class="tooltip"
-          ref="tooltip"
-          v-show="
-            (showTooltip && !disabled && (hovering || holding)) ||
-            alwaysShowTooltip
-          "
-          :style="{
-            transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
-            top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
-          }"
-        >
+        <div class="tooltip" ref="tooltip" v-show="
+          (showTooltip && !disabled && (hovering || holding)) ||
+          alwaysShowTooltip
+        " :style="{
+  transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
+  top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
+}">
           {{ tooltipText }}
         </div>
       </transition>
@@ -373,6 +288,7 @@ export default defineComponent({
 .fade-leave-active {
   transition: opacity 0.2s;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
@@ -404,7 +320,8 @@ export default defineComponent({
     .handle {
       top: unset;
       bottom: 0;
-      left: 0;
+      left: var(--dot-top, 6px);
+
     }
 
     .tooltip {
@@ -416,17 +333,6 @@ export default defineComponent({
   &.circular {
     height: var(--width, 100%);
     margin: 0;
-
-    .round-end {
-      position: absolute;
-      margin: 0 auto;
-      width: var(--height, 6px);
-      height: var(--height, 6px);
-      transform: scale(1);
-      left: 0;
-      right: 0;
-      top: calc(var(--height, 6px) * -0.5);
-    }
 
     .handle-container {
       user-select: none;
@@ -441,14 +347,25 @@ export default defineComponent({
       align-items: center;
 
       .handle {
-        top: calc(var(--height, 6px) * -0.5);
-        width: var(--height, 6px);
-        height: var(--height, 6px);
+        top: calc(var(--dot-width, 6px) * -0.5);
+        width: var(--dot-width, 6px);
+        height: var(--dot-width, 6px);
         transform: scale(1);
 
         &.hover {
           transform: scale(1.5);
         }
+      }
+
+      .round-end.handle {
+        position: absolute;
+        margin: 0 auto;
+        width: var(--height, 6px);
+        height: var(--height, 6px);
+        transform: scale(1);
+        left: 0;
+        right: 0;
+        top: calc(var(--height, 6px) * -0.5);
       }
 
       .tooltip {
@@ -497,18 +414,22 @@ export default defineComponent({
   }
 
   .handle {
+    top: var(--dot-top, 6px);
+    width: var(--dot-width, 6px);
+    height: var(--dot-width, 6px);
+    border-radius: calc(var(--dot-width, 6px) / 2);
     position: absolute;
-    top: 0;
-    width: var(--height, 6px);
-    height: var(--height, 6px);
-    border-radius: calc(var(--height, 6px) / 2);
+    // top: 0;
+    // width: var(--height, 6px);
+    // height: var(--height, 6px);
+    // border-radius: calc(var(--height, 6px) / 2);
     background-color: var(--color, #fb2727);
-    transform: scale(0);
+    // transform: scale(1);
     transition: transform 0.2s ease;
     user-select: none;
 
     &.hover {
-      transform: scale(1.35);
+      transform: scale(var(--magnification));
     }
   }
 }

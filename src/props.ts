@@ -3,6 +3,8 @@ import validateLength from "./utils/validateLength";
 export type Props = Readonly<{
   width: string;
   height: number;
+  dotWidth: number;
+  magnification: number;
   color: string;
   trackColor: string;
   max: number;
@@ -31,6 +33,14 @@ export default {
   height: {
     type: Number,
     default: 6,
+  },
+  dotWidth: {
+    type: Number,
+    default: 6,
+  },
+  magnification: {
+    type: Number,
+    default: 1.35
   },
   color: {
     type: String,

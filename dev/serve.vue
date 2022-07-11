@@ -13,6 +13,8 @@ export default defineComponent({
       expand: false,
       showInputs: false,
       height: 10,
+      dotWidth: 12,
+      magnification: 1.35,
       width: 200,
       min: 0,
       max: 100,
@@ -51,101 +53,51 @@ export default defineComponent({
     <div v-show="showInputs" class="inputs">
       <div class="item">
         <h2>height:</h2>
-        <vue3-slider
-          class="slider"
-          v-model="height"
-          tooltip
-          :min="5"
-          :height="8"
-          trackColor="rgba(0,0,0,0.15)"
-          color="#005CC8"
-          tooltipColor="black"
-          tooltipTextColor="white"
-          tooltipText="%vpx"
-        />
+        <vue3-slider class="slider" v-model="height" tooltip :min="5" :height="8" trackColor="rgba(0,0,0,0.15)"
+          color="#005CC8" tooltipColor="black" tooltipTextColor="white" tooltipText="%vpx" />
       </div>
 
       <div class="item">
         <h2>width:</h2>
-        <vue3-slider
-          class="slider"
-          v-model="width"
-          tooltip
-          :height="8"
-          :min="70"
-          :max="650"
-          trackColor="rgba(0,0,0,0.15)"
-          color="#005CC8"
-          tooltipColor="black"
-          tooltipTextColor="white"
-          tooltipText="%vpx"
-        />
+        <vue3-slider class="slider" v-model="width" tooltip :height="8" :min="70" :max="650"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white"
+          tooltipText="%vpx" />
+      </div>
+      <div class="item">
+        <h2>dotWidth:</h2>
+        <vue3-slider class="slider" v-model="dotWidth" tooltip :height="8" :min="10" :max="30"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white"
+          tooltipText="%vpx" />
+      </div>
+      <div class="item">
+        <h2>magnification:</h2>
+        <vue3-slider class="slider" :step="0.01" v-model="magnification" tooltip :height="8" :min="1" :max="2"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white"
+          tooltipText="%v" />
       </div>
 
       <div class="item">
         <h2>min:</h2>
-        <vue3-slider
-          class="slider"
-          v-model="min"
-          tooltip
-          :height="8"
-          :min="-1000"
-          :max="1000"
-          trackColor="rgba(0,0,0,0.15)"
-          color="#005CC8"
-          tooltipColor="black"
-          tooltipTextColor="white"
-        />
+        <vue3-slider class="slider" v-model="min" tooltip :height="8" :min="-1000" :max="1000"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white" />
       </div>
 
       <div class="item">
         <h2>max:</h2>
-        <vue3-slider
-          class="slider"
-          v-model="max"
-          tooltip
-          :height="8"
-          :min="-1000"
-          :max="1000"
-          trackColor="rgba(0,0,0,0.15)"
-          color="#005CC8"
-          tooltipColor="black"
-          tooltipTextColor="white"
-        />
+        <vue3-slider class="slider" v-model="max" tooltip :height="8" :min="-1000" :max="1000"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white" />
       </div>
 
       <div class="item">
         <h2>step:</h2>
-        <vue3-slider
-          class="slider"
-          v-model="step"
-          tooltip
-          :height="8"
-          :min="0"
-          :max="50"
-          :step="0.1"
-          trackColor="rgba(0,0,0,0.15)"
-          color="#005CC8"
-          tooltipColor="black"
-          tooltipTextColor="white"
-        />
+        <vue3-slider class="slider" v-model="step" tooltip :height="8" :min="0" :max="50" :step="0.1"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white" />
       </div>
 
       <div class="item">
         <h2>circle offset:</h2>
-        <vue3-slider
-          class="slider"
-          v-model="circleOffset"
-          tooltip
-          :height="8"
-          :min="0"
-          :max="360"
-          :step="1"
-          trackColor="rgba(0,0,0,0.15)"
-          color="#005CC8"
-          tooltipColor="black"
-          tooltipTextColor="white"
-        />
+        <vue3-slider class="slider" v-model="circleOffset" tooltip :height="8" :min="0" :max="360" :step="1"
+          trackColor="rgba(0,0,0,0.15)" color="#005CC8" tooltipColor="black" tooltipTextColor="white" />
       </div>
 
       <div class="item">
@@ -160,11 +112,7 @@ export default defineComponent({
 
       <div class="item">
         <h2>alwaysShowTooltip:</h2>
-        <input
-          type="checkbox"
-          name="alwaysShowTooltip"
-          v-model="alwaysShowTooltip"
-        />
+        <input type="checkbox" name="alwaysShowTooltip" v-model="alwaysShowTooltip" />
       </div>
 
       <div class="item">
@@ -210,25 +158,10 @@ export default defineComponent({
     </button>
   </section>
 
-  <vue3-slider
-    class="slider"
-    :class="{ colorShift }"
-    v-model="sliderVal"
-    :height="height"
-    :tooltip="tooltip"
-    :alwaysShowTooltip="alwaysShowTooltip"
-    :width="width + 'px'"
-    :min="min"
-    :max="max"
-    :step="step"
-    :tooltipText="tooltipText"
-    :orientation="orientation"
-    :repeat="repeat"
-    :sticky="sticky"
-    :flip="flip"
-    :circleOffset="circleOffset"
-    :disabled="disabled"
-  />
+  <vue3-slider class="slider" :class="{ colorShift }" v-model="sliderVal" :dotWidth="dotWidth"
+    :magnification="magnification" :height="height" :tooltip="tooltip" :alwaysShowTooltip="alwaysShowTooltip"
+    :width="width + 'px'" :min="min" :max="max" :step="step" :tooltipText="tooltipText" :orientation="orientation"
+    :repeat="repeat" :sticky="sticky" :flip="flip" :circleOffset="circleOffset" :disabled="disabled" />
   <h1>{{ sliderVal }}</h1>
 </template>
 
@@ -236,7 +169,7 @@ export default defineComponent({
 body {
   width: 100%;
   height: 100vh;
-  background-color: #080a0d;
+  background-color: #bcd5fa;
   margin: 0;
   padding: 8%;
   box-sizing: border-box;
