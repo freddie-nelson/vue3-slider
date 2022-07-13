@@ -25,7 +25,9 @@ export default defineComponent({
       sticky: false,
       repeat: false,
       flip: false,
+      disabled: false,
       circleOffset: 0,
+      alwaysShowTooltip: false,
     };
   },
   methods: {
@@ -174,6 +176,15 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>alwaysShowTooltip:</h2>
+        <input
+          type="checkbox"
+          name="alwaysShowTooltip"
+          v-model="alwaysShowTooltip"
+        />
+      </div>
+
+      <div class="item">
         <h2>orientation:</h2>
         <select name="orientation" v-model="orientation">
           <option value="horizontal">horizontal</option>
@@ -202,6 +213,11 @@ export default defineComponent({
         <input type="checkbox" name="flip" v-model="flip" />
       </div>
 
+      <div class="item">
+        <h2>disabled:</h2>
+        <input type="checkbox" name="disabled" v-model="disabled" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -217,6 +233,7 @@ export default defineComponent({
     v-model="sliderVal"
     :height="height"
     :tooltip="tooltip"
+    :alwaysShowTooltip="alwaysShowTooltip"
     :width="width + 'px'"
     :min="min"
     :max="max"
@@ -228,6 +245,7 @@ export default defineComponent({
     :sticky="sticky"
     :flip="flip"
     :circleOffset="circleOffset"
+    :disabled="disabled"
   />
   <h1>{{ sliderVal }}</h1>
 </template>

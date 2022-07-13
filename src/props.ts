@@ -13,12 +13,14 @@ export type Props = Readonly<{
   tooltipText: string;
   tooltipColor: string;
   tooltipTextColor: string;
+  alwaysShowTooltip: boolean;
   orientation: string;
   modelValue: number;
   repeat: boolean;
   sticky: boolean;
   flip: boolean;
   circleOffset: number;
+  disabled: boolean;
 }>;
 
 export default {
@@ -103,6 +105,10 @@ export default {
       return true;
     },
   },
+  alwaysShowTooltip: {
+    type: Boolean,
+    default: false,
+  },
   orientation: {
     type: String,
     default: "horizontal",
@@ -133,5 +139,9 @@ export default {
     validator(val: number) {
       return val >= 0 && val <= 360;
     },
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 };

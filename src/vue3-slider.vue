@@ -162,6 +162,7 @@ export default defineComponent({
       applyHandleHoverClass,
       hovering,
       showTooltip: computed(() => props.tooltip),
+      alwaysShowTooltip: computed(() => props.alwaysShowTooltip),
       tooltip,
       tooltipText,
       tooltipOffset,
@@ -181,19 +182,23 @@ export default defineComponent({
     key="horizontal"
     :style="{ ...vars }"
     class="vue3-slider"
-    tabindex="0"
     ref="slider"
-    @touchstart="clickHandler"
-    @mousedown="clickHandler"
-    @mouseenter="hovering = true"
+    :tabindex="disabled ? undefined : 0"
+    @touchstart="!disabled ? clickHandler($event) : null"
+    @mousedown="!disabled ? clickHandler($event) : null"
+    @mouseenter="!disabled ? (hovering = true) : null"
     @mouseleave="hovering = false"
-    @keydown="handleKeydown"
+    @keydown="!disabled ? handleKeydown($event) : null"
+    :disabled="disabled ? '' : undefined"
   >
     <transition name="fade">
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="showTooltip && (hovering || holding)"
+        v-show="
+          (showTooltip && !disabled && (hovering || holding)) ||
+          alwaysShowTooltip
+        "
         :style="{
           transform: flip
             ? `translate(${-tooltipOffset}px)`
@@ -221,7 +226,7 @@ export default defineComponent({
       :style="{
         [flip ? 'right' : 'left']: filledWidth - (height * 1.35) / 2 + 'px',
       }"
-      :class="{ hover: applyHandleHoverClass }"
+      :class="{ hover: applyHandleHoverClass && !disabled }"
     />
   </div>
 
@@ -230,19 +235,23 @@ export default defineComponent({
     key="vertical"
     :style="{ ...vars }"
     class="vue3-slider vertical"
-    tabindex="0"
     ref="slider"
-    @touchstart="clickHandler"
-    @mousedown="clickHandler"
-    @mouseenter="hovering = true"
+    :tabindex="disabled ? undefined : 0"
+    @touchstart="!disabled ? clickHandler($event) : null"
+    @mousedown="!disabled ? clickHandler($event) : null"
+    @mouseenter="!disabled ? (hovering = true) : null"
     @mouseleave="hovering = false"
-    @keydown="handleKeydown"
+    @keydown="!disabled ? handleKeydown($event) : null"
+    :disabled="disabled ? '' : undefined"
   >
     <transition name="fade">
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="showTooltip && (hovering || holding)"
+        v-show="
+          (showTooltip && !disabled && (hovering || holding)) ||
+          alwaysShowTooltip
+        "
         :style="{
           transform: flip
             ? `translateY(${tooltipOffset}px)`
@@ -270,7 +279,7 @@ export default defineComponent({
       :style="{
         [flip ? 'top' : 'bottom']: filledWidth - (height * 1.35) / 2 + 'px',
       }"
-      :class="{ hover: applyHandleHoverClass }"
+      :class="{ hover: applyHandleHoverClass && !disabled }"
     />
   </div>
 
@@ -278,14 +287,15 @@ export default defineComponent({
     v-else
     key="circular"
     class="vue3-slider circular"
-    tabindex="0"
-    ref="slider"
     :style="{ ...vars }"
-    @touchstart="clickHandler"
-    @mousedown="clickHandler"
-    @mouseenter="hovering = true"
+    ref="slider"
+    :tabindex="disabled ? undefined : 0"
+    @touchstart="!disabled ? clickHandler($event) : null"
+    @mousedown="!disabled ? clickHandler($event) : null"
+    @mouseenter="!disabled ? (hovering = true) : null"
     @mouseleave="hovering = false"
-    @keydown="handleKeydown"
+    @keydown="!disabled ? handleKeydown($event) : null"
+    :disabled="disabled ? '' : undefined"
   >
     <svg
       width="100%"
@@ -333,13 +343,19 @@ export default defineComponent({
       class="handle-container"
       :style="{ transform: `rotate(${sliderValueDegrees + circleOffset}deg)` }"
     >
-      <div class="handle" :class="{ hover: applyHandleHoverClass }" />
+      <div
+        class="handle"
+        :class="{ hover: applyHandleHoverClass && !disabled }"
+      />
 
       <transition name="fade">
         <div
           class="tooltip"
           ref="tooltip"
-          v-show="showTooltip && (hovering || holding)"
+          v-show="
+            (showTooltip && !disabled && (hovering || holding)) ||
+            alwaysShowTooltip
+          "
           :style="{
             transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
             top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
@@ -370,6 +386,10 @@ export default defineComponent({
   margin: 3px 0;
   cursor: pointer;
   font-family: inherit;
+
+  &[disabled] {
+    cursor: unset;
+  }
 
   &.vertical {
     width: var(--height, 6px);
