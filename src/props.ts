@@ -7,6 +7,7 @@ export type Props = Readonly<{
   trackColor: string;
   max: number;
   min: number;
+  limit?: number;
   step: number;
   tooltip: boolean;
   tooltipText: string;
@@ -56,6 +57,13 @@ export default {
         console.error("[Vue3Slider] Error: Step cannot be 0");
         return false;
       }
+    },
+  },
+  limit: {
+    type: Number,
+    default: undefined,
+    validator(val: any) {
+      return val === undefined || typeof val === "number";
     },
   },
   tooltip: {

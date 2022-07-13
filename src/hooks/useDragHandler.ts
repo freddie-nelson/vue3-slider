@@ -78,6 +78,9 @@ export default function(
 
     value = Math.min(store.sliderRange.value, Math.max(value, 0));
 
+    // apply limit
+    if (props.limit !== undefined) value = Math.min(value, props.limit + Math.abs(props.min));
+
     previousSliderValue = value;
 
     return value;

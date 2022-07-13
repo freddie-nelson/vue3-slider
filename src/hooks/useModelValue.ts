@@ -9,13 +9,17 @@ export default function(store: Store, props: Props, emit: SetupContext["emit"]) 
 
   watch(modelValueRef, (val) => {
     if (store.formattedSliderValue.value !== val) {
+      // apply limit
+      if (props.limit !== undefined) val = Math.min(val, props.limit);
+
       let newValue = 0;
       if (props.min < 0) {
         newValue = val + Math.abs(props.min);
       } else {
         newValue = val - props.min;
       }
-      if (newValue > store.sliderRange.value) newValue = store.sliderRange.value;
+
+      newValue = Math.min(newValue, store.sliderRange.value);
 
       updateModelValue(newValue);
     }
@@ -34,7 +38,13 @@ export default function(store: Store, props: Props, emit: SetupContext["emit"]) 
       roundedVal = 0;
     }
 
-    return roundedVal + props.min;
+    // get between min and max
+    roundedVal = roundedVal + props.min;
+
+    // apply limit
+    if (props.limit !== undefined) roundedVal = Math.min(roundedVal, props.limit);
+
+    return roundedVal;
   };
 
   // update model value and related refs

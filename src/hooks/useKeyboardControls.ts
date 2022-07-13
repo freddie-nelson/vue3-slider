@@ -3,15 +3,15 @@ import { Store } from "@/store";
 
 export default function(store: Store, props: Props, updateModelValue: (val: number) => void) {
   const calculateValueFromDiff = (diff: number) => {
-    const newVal = store.modelValueUnrounded.value + diff;
+    let newVal = store.modelValueUnrounded.value + diff;
 
-    if (newVal <= 0) {
-      updateModelValue(0);
-    } else if (newVal >= store.sliderRange.value) {
-      updateModelValue(store.sliderRange.value);
-    } else {
-      updateModelValue(newVal);
-    }
+    // clamp between 0 and sliderRange (raw max value)
+    newVal = Math.min(store.sliderRange.value, Math.max(0, newVal));
+
+    // apply limit
+    if (props.limit !== undefined) newVal = Math.min(newVal, props.limit + Math.abs(props.min));
+
+    updateModelValue(newVal);
   };
 
   const handleKeydown = (e: KeyboardEvent) => {

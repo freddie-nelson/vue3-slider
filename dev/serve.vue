@@ -17,6 +17,7 @@ export default defineComponent({
       min: 0,
       max: 100,
       step: 1,
+      limit: undefined,
       tooltip: true,
       tooltipText: "%v",
       orientation: "horizontal",
@@ -130,6 +131,22 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>limit:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="limit"
+          tooltip
+          :height="8"
+          :min="-1000"
+          :max="1000"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#005CC8"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
         <h2>circle offset:</h2>
         <vue3-slider
           class="slider"
@@ -203,6 +220,7 @@ export default defineComponent({
     :width="width + 'px'"
     :min="min"
     :max="max"
+    :limit="limit"
     :step="step"
     :tooltipText="tooltipText"
     :orientation="orientation"
