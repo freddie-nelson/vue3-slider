@@ -65,6 +65,7 @@ export default {
 | trackColor       | String   |          | #F1F6F8    | ^^^                                                           |
 | max              | Number   |          | 100        | cannot be less than min                                       |
 | min              | Number   |          | 0          | cannot be greater than max                                    |
+| limit            | Number   |          |            |                                                               |
 | step             | Number   |          | 1          |                                                               |
 | tooltip          | Boolean  |          | false      |                                                               |
 | tooltipText      | String   |          | "%v"       | must contain %v (%v is replaced with slider's value)          |
