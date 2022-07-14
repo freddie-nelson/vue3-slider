@@ -16,6 +16,7 @@ export type Props = Readonly<{
   tooltipColor: string;
   tooltipTextColor: string;
   alwaysShowTooltip: boolean;
+  flipTooltip: boolean;
   orientation: string;
   modelValue: number;
   repeat: boolean;
@@ -116,6 +117,10 @@ export default {
     },
   },
   alwaysShowTooltip: {
+    type: Boolean,
+    default: false,
+  },
+  flipTooltip: {
     type: Boolean,
     default: false,
   },

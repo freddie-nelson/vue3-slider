@@ -206,9 +206,11 @@ export default defineComponent({
             : `translate(${tooltipOffset}px)`,
           right: flip ? '0px' : undefined,
           left: flip ? 'auto' : undefined,
-          bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * ${
+          '--tooltip-margin': `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * ${
             applyHandleHoverClass ? 'var(--handle-scale, 1.35)' : '1.35'
           }))`,
+          bottom: flipTooltip ? 'unset' : 'var(--tooltip-margin)',
+          top: flipTooltip ? 'var(--tooltip-margin)' : 'unset',
         }"
       >
         {{ tooltipText }}
@@ -261,9 +263,11 @@ export default defineComponent({
             : `translateY(${-tooltipOffset}px)`,
           top: flip ? '0px' : undefined,
           bottom: flip ? 'auto' : undefined,
-          left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * ${
+          '--tooltip-margin': `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * ${
             applyHandleHoverClass ? 'var(--handle-scale, 1.35)' : '1.35'
           }))`,
+          left: flipTooltip ? 'unset' : 'var(--tooltip-margin)',
+          right: flipTooltip ? 'var(--tooltip-margin)' : 'unset',
         }"
       >
         {{ tooltipText }}
@@ -363,11 +367,14 @@ export default defineComponent({
           "
           :style="{
             transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
-            top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * ${
+            '--tooltip-margin': `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * ${
               applyHandleHoverClass
                 ? 'calc(var(--handle-scale, 1.35) * 0.9)'
                 : 1.35
             })) * -1)`,
+            top: flipTooltip
+              ? 'calc(var(--tooltip-margin) * -0.7)'
+              : 'var(--tooltip-margin)',
           }"
         >
           {{ tooltipText }}
@@ -485,7 +492,7 @@ export default defineComponent({
     font-weight: bold;
     display: flex;
     align-items: center;
-    transition: bottom 0.3s ease, left 0.3s ease, top 0.3s ease;
+    transition: bottom 0.3s ease, left 0.3s ease, top 0.3s ease, right 0.3s ease;
   }
 
   .track {

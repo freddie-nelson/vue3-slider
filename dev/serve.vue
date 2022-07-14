@@ -30,6 +30,7 @@ export default defineComponent({
       circleOffset: 0,
       alwaysShowTooltip: false,
       alwaysShowHandle: false,
+      flipTooltip: false,
     };
   },
   methods: {
@@ -204,6 +205,11 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>flipTooltip:</h2>
+        <input type="checkbox" name="flipTooltip" v-model="flipTooltip" />
+      </div>
+
+      <div class="item">
         <h2>alwaysShowHandle:</h2>
         <input
           type="checkbox"
@@ -263,6 +269,7 @@ export default defineComponent({
     :tooltip="tooltip"
     :alwaysShowTooltip="alwaysShowTooltip"
     :alwaysShowHandle="alwaysShowHandle"
+    :flipTooltip="flipTooltip"
     :width="width + 'px'"
     :min="min"
     :max="max"
