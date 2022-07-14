@@ -3,6 +3,8 @@ import validateLength from "./utils/validateLength";
 export type Props = Readonly<{
   width: string;
   height: number;
+  handleScale: number;
+  alwaysShowHandle: boolean;
   color: string;
   trackColor: string;
   max: number;
@@ -32,6 +34,14 @@ export default {
   height: {
     type: Number,
     default: 6,
+  },
+  handleScale: {
+    type: Number,
+    default: 1.5,
+  },
+  alwaysShowHandle: {
+    type: Boolean,
+    default: false,
   },
   color: {
     type: String,

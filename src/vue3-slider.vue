@@ -143,6 +143,7 @@ export default defineComponent({
         "--track-color": props.trackColor,
         "--tooltip-color": props.tooltipColor,
         "--tooltip-text-color": props.tooltipTextColor,
+        "--handle-scale": props.handleScale,
       };
     });
 
@@ -205,7 +206,9 @@ export default defineComponent({
             : `translate(${tooltipOffset}px)`,
           right: flip ? '0px' : undefined,
           left: flip ? 'auto' : undefined,
-          bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * 1.35))`,
+          bottom: `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * ${
+            applyHandleHoverClass ? 'var(--handle-scale, 1.35)' : '1.35'
+          }))`,
         }"
       >
         {{ tooltipText }}
@@ -258,7 +261,9 @@ export default defineComponent({
             : `translateY(${-tooltipOffset}px)`,
           top: flip ? '0px' : undefined,
           bottom: flip ? 'auto' : undefined,
-          left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * 1.35))`,
+          left: `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * ${
+            applyHandleHoverClass ? 'var(--handle-scale, 1.35)' : '1.35'
+          }))`,
         }"
       >
         {{ tooltipText }}
@@ -358,7 +363,11 @@ export default defineComponent({
           "
           :style="{
             transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
-            top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * 1.3)) * -1)`,
+            top: `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * ${
+              applyHandleHoverClass
+                ? 'calc(var(--handle-scale, 1.35) * 0.9)'
+                : 1.35
+            })) * -1)`,
           }"
         >
           {{ tooltipText }}
@@ -447,7 +456,7 @@ export default defineComponent({
         transform: scale(1);
 
         &.hover {
-          transform: scale(1.5);
+          transform: scale(var(--handle-scale, 1.35));
         }
       }
 
@@ -476,6 +485,7 @@ export default defineComponent({
     font-weight: bold;
     display: flex;
     align-items: center;
+    transition: bottom 0.3s ease, left 0.3s ease, top 0.3s ease;
   }
 
   .track {
@@ -508,7 +518,7 @@ export default defineComponent({
     user-select: none;
 
     &.hover {
-      transform: scale(1.35);
+      transform: scale(var(--handle-scale, 1.35));
     }
   }
 }

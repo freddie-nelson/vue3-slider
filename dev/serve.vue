@@ -18,6 +18,7 @@ export default defineComponent({
       max: 100,
       step: 1,
       limit: undefined,
+      handleScale: 1.5,
       tooltip: true,
       tooltipText: "%v",
       orientation: "horizontal",
@@ -166,6 +167,23 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>handle scale:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="handleScale"
+          tooltip
+          :height="8"
+          :min="0.1"
+          :max="5"
+          :step="0.1"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#005CC8"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
         <h2>tooltip:</h2>
         <input type="checkbox" name="tooltip" v-model="tooltip" />
       </div>
@@ -239,6 +257,7 @@ export default defineComponent({
     :max="max"
     :limit="limit"
     :step="step"
+    :handleScale="handleScale"
     :tooltipText="tooltipText"
     :orientation="orientation"
     :repeat="repeat"
@@ -292,7 +311,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 590px;
+  height: 670px;
   opacity: 1;
 }
 
