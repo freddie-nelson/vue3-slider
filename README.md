@@ -61,6 +61,8 @@ export default {
 | v-model          | Number   | ✔️       |            |                                                               |
 | width            | String   |          | 100%       | must be valid css length                                      |
 | height           | Number   |          | 6          |                                                               |
+| handleScale      | Number   |          | 1.35       |                                                               |
+| alwaysShowHandle | Boolean  |          | false      |                                                               |
 | color            | String   |          | #FB2727    | must be a valid hex, rgb, rgba or html color value            |
 | trackColor       | String   |          | #F1F6F8    | ^^^                                                           |
 | max              | Number   |          | 100        | cannot be less than min                                       |
@@ -72,6 +74,7 @@ export default {
 | tooltipColor     | String   |          | #FFFFFF    | must be a valid hex, rgb, rgba or html color value            |
 | tooltipTextColor | String   |          | #000000    | ^^^                                                           |
 | formatTooltip    | Function |          | null       | function must take one parameter (number) and return a string |
+| flipTooltip      | Boolean  |          | false      |                                                               |
 | orientation      | String   |          | horizontal | restricted choice (horizontal, vertical, circular)            |
 | repeat           | Boolean  |          | false      |                                                               |
 | sticky           | Boolean  |          | false      |                                                               |

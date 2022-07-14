@@ -38,7 +38,7 @@ export default {
   },
   handleScale: {
     type: Number,
-    default: 1.5,
+    default: 1.35,
   },
   alwaysShowHandle: {
     type: Boolean,

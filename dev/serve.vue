@@ -18,7 +18,7 @@ export default defineComponent({
       max: 100,
       step: 1,
       limit: undefined,
-      handleScale: 1.5,
+      handleScale: 1.35,
       tooltip: true,
       tooltipText: "%v",
       orientation: "horizontal",
