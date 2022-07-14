@@ -54,7 +54,7 @@ export default defineComponent({
       if (store.holding.value) {
         return true;
       } else {
-        return hovering.value;
+        return props.alwaysShowHandle || hovering.value;
       }
     });
 

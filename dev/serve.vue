@@ -29,6 +29,7 @@ export default defineComponent({
       disabled: false,
       circleOffset: 0,
       alwaysShowTooltip: false,
+      alwaysShowHandle: false,
     };
   },
   methods: {
@@ -203,6 +204,15 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>alwaysShowHandle:</h2>
+        <input
+          type="checkbox"
+          name="alwaysShowHandle"
+          v-model="alwaysShowHandle"
+        />
+      </div>
+
+      <div class="item">
         <h2>orientation:</h2>
         <select name="orientation" v-model="orientation">
           <option value="horizontal">horizontal</option>
@@ -252,6 +262,7 @@ export default defineComponent({
     :height="height"
     :tooltip="tooltip"
     :alwaysShowTooltip="alwaysShowTooltip"
+    :alwaysShowHandle="alwaysShowHandle"
     :width="width + 'px'"
     :min="min"
     :max="max"
