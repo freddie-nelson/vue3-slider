@@ -28,6 +28,7 @@ export default defineComponent({
       flip: false,
       disabled: false,
       circleOffset: 0,
+      circleGap: 0,
       alwaysShowTooltip: false,
       alwaysShowHandle: false,
       flipTooltip: false,
@@ -169,6 +170,23 @@ export default defineComponent({
       </div>
 
       <div class="item">
+        <h2>circle gap:</h2>
+        <vue3-slider
+          class="slider"
+          v-model="circleGap"
+          tooltip
+          :height="8"
+          :min="0"
+          :max="360"
+          :step="1"
+          trackColor="rgba(0,0,0,0.15)"
+          color="#005CC8"
+          tooltipColor="black"
+          tooltipTextColor="white"
+        />
+      </div>
+
+      <div class="item">
         <h2>handle scale:</h2>
         <vue3-slider
           class="slider"
@@ -282,6 +300,7 @@ export default defineComponent({
     :sticky="sticky"
     :flip="flip"
     :circleOffset="circleOffset"
+    :circleGap="circleGap"
     :disabled="disabled"
   />
   <h1>{{ sliderVal }}</h1>
@@ -329,7 +348,7 @@ h1 {
 }
 
 .controls.expand .inputs {
-  height: 670px;
+  height: 770px;
   opacity: 1;
 }
 

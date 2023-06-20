@@ -58,14 +58,17 @@ export default function(
         }
       }
 
-      const valPerDeg = store.sliderRange.value / 360;
-      value = angle * valPerDeg - props.circleOffset * valPerDeg;
-      if (value < 0) {
-        value += store.sliderRange.value;
+      angle -= props.circleOffset;
+      while (angle < 0) {
+        angle += 360;
       }
+
       if (props.flip) {
-        value = store.sliderRange.value - value;
+        angle = 360 - angle;
       }
+
+      const valPerDeg = store.sliderRange.value / (360 - props.circleGap);
+      value = angle * valPerDeg;
 
       // stop value from going to 0 when at max
       if (!props.repeat && dragging) {

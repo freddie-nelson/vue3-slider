@@ -125,13 +125,19 @@ export default defineComponent({
       return 2 * Math.PI * (store.sliderWidth.value / 2);
     });
 
+    const trackStrokeOffset = computed(() => {
+      if (props.orientation !== "circular") return 0;
+
+      return props.circleGap / 360 * circumference.value;
+    });
+
     const strokeOffset = computed(() => {
       if (props.orientation !== "circular") return 0;
 
-      return (
-        ((store.sliderRange.value - store.modelValueUnrounded.value) /
-          store.sliderRange.value) *
-        circumference.value
+      return circumference.value - (
+        (store.modelValueUnrounded.value / store.sliderRange.value) * 
+        (circumference.value) * 
+        (1 - props.circleGap / 360)
       );
     });
 
@@ -169,8 +175,10 @@ export default defineComponent({
       tooltipOffset,
       vars,
       circumference,
+      trackStrokeOffset,
       strokeOffset,
       circleOffset: computed(() => props.circleOffset),
+      circleGap: computed(() => props.circleGap),
       sliderValueDegrees: store.sliderValueDegrees,
     };
   },
@@ -313,13 +321,22 @@ export default defineComponent({
       style="overflow: visible"
     >
       <circle
+        :style="{
+          transform: `rotate(${-90 + circleOffset}deg) ${
+            flip ? 'scaleY(-1)' : ''
+          }`,
+        }"
+        style="transform-origin: center"
         stroke="var(--track-color)"
         vector-effect="non-scaling-stroke"
         fill="none"
         stroke-width="var(--height)"
+        stroke-linecap="round"
         r="50%"
         cx="50"
         cy="50"
+        :stroke-dasharray="circumference"
+        :stroke-dashoffset="trackStrokeOffset"
       ></circle>
 
       <circle

@@ -58,7 +58,7 @@ export default {
 
 | Name             | Type     | Required | Default    | Rules                                                         |
 | ---------------- | -------- | -------- | ---------- | ------------------------------------------------------------- |
-| v-model          | Number   | ✔️       |            |                                                               |
+| v-model          | Number   | ✔️        |            |                                                               |
 | width            | String   |          | 100%       | must be valid css length                                      |
 | height           | Number   |          | 6          |                                                               |
 | handleScale      | Number   |          | 1.35       |                                                               |
@@ -80,6 +80,7 @@ export default {
 | sticky           | Boolean  |          | false      |                                                               |
 | flip             | Boolean  |          | false      |                                                               |
 | circleOffset     | Number   |          | 0          | must be between 0 and 360 (inclusive)                         |
+| circleGap        | Number   |          | 0          | must be between 0 and 360                                     |
 
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
 
