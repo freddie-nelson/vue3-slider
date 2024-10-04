@@ -56,31 +56,34 @@ export default {
 
 ## Props
 
-| Name             | Type     | Required | Default    | Rules                                                         |
-| ---------------- | -------- | -------- | ---------- | ------------------------------------------------------------- |
-| v-model          | Number   | ✔️        |            |                                                               |
-| width            | String   |          | 100%       | must be valid css length                                      |
-| height           | Number   |          | 6          |                                                               |
-| handleScale      | Number   |          | 1.35       |                                                               |
-| alwaysShowHandle | Boolean  |          | false      |                                                               |
-| color            | String   |          | #FB2727    | must be a valid hex, rgb, rgba or html color value            |
-| trackColor       | String   |          | #F1F6F8    | ^^^                                                           |
-| max              | Number   |          | 100        | cannot be less than min                                       |
-| min              | Number   |          | 0          | cannot be greater than max                                    |
-| limit            | Number   |          |            |                                                               |
-| step             | Number   |          | 1          |                                                               |
-| tooltip          | Boolean  |          | false      |                                                               |
-| tooltipText      | String   |          | "%v"       | must contain %v (%v is replaced with slider's value)          |
-| tooltipColor     | String   |          | #FFFFFF    | must be a valid hex, rgb, rgba or html color value            |
-| tooltipTextColor | String   |          | #000000    | ^^^                                                           |
-| formatTooltip    | Function |          | null       | function must take one parameter (number) and return a string |
-| flipTooltip      | Boolean  |          | false      |                                                               |
-| orientation      | String   |          | horizontal | restricted choice (horizontal, vertical, circular)            |
-| repeat           | Boolean  |          | false      |                                                               |
-| sticky           | Boolean  |          | false      |                                                               |
-| flip             | Boolean  |          | false      |                                                               |
-| circleOffset     | Number   |          | 0          | must be between 0 and 360 (inclusive)                         |
-| circleGap        | Number   |          | 0          | must be between 0 and 360                                     |
+| Name              | Type     | Required | Default    | Rules                                                         |
+| ----------------- | -------- | -------- | ---------- | ------------------------------------------------------------- |
+| v-model           | Number   | ✔️       |            |                                                               |
+| width             | String   |          | 100%       | must be valid css length                                      |
+| height            | Number   |          | 6          |                                                               |
+| handleScale       | Number   |          | 1.35       |                                                               |
+| handleColor       | String   |          |            | When empty this will take the value of color                  |
+| alwaysShowHandle  | Boolean  |          | false      |                                                               |
+| color             | String   |          | #FB2727    | must be a valid hex, rgb, rgba or html color value            |
+| trackColor        | String   |          | #F1F6F8    | ^^^                                                           |
+| max               | Number   |          | 100        | cannot be less than min                                       |
+| min               | Number   |          | 0          | cannot be greater than max                                    |
+| limit             | Number   |          |            |                                                               |
+| step              | Number   |          | 1          |                                                               |
+| customSliderSteps | Number[] |          | undefined  |                                                               |
+| tooltip           | Boolean  |          | false      |                                                               |
+| tooltipText       | String   |          | "%v"       | must contain %v (%v is replaced with slider's value)          |
+| tooltipColor      | String   |          | #FFFFFF    | must be a valid hex, rgb, rgba or html color value            |
+| tooltipTextColor  | String   |          | #000000    | ^^^                                                           |
+| formatTooltip     | Function |          | null       | function must take one parameter (number) and return a string |
+| flipTooltip       | Boolean  |          | false      |                                                               |
+| tooltipStyles     | Object   |          |            | Should be a valid vue style object                            |
+| orientation       | String   |          | horizontal | restricted choice (horizontal, vertical, circular)            |
+| repeat            | Boolean  |          | false      |                                                               |
+| sticky            | Boolean  |          | false      |                                                               |
+| flip              | Boolean  |          | false      |                                                               |
+| circleOffset      | Number   |          | 0          | must be between 0 and 360 (inclusive)                         |
+| circleGap         | Number   |          | 0          | must be between 0 and 360                                     |
 
 **NOTE: When using the circular slider width is the diameter of the circle and height is the stroke width**
 
