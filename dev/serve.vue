@@ -34,6 +34,7 @@ export default defineComponent({
       flipTooltip: false,
       customSliderStepsText: "",
       tooltipStylesText: "{}",
+      handleColor: "",
     };
   },
   computed: {
@@ -294,6 +295,11 @@ export default defineComponent({
         <input type="text" name="tooltipStylesText" v-model="tooltipStylesText" />
       </div>
 
+      <div class="item">
+        <h2>handle color:</h2>
+        <input type="text" name="handleColor" v-model="handleColor" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -328,6 +334,7 @@ export default defineComponent({
     :disabled="disabled"
     :customSliderSteps="customSliderSteps"
     :tooltipStyles="tooltipStyles"
+    :handleColor="handleColor"
   />
   <h1>{{ sliderVal }}</h1>
 </template>

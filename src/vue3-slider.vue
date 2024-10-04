@@ -133,6 +133,7 @@ export default defineComponent({
         "--tooltip-color": props.tooltipColor,
         "--tooltip-text-color": props.tooltipTextColor,
         "--handle-scale": props.handleScale,
+        "--handle-color": props.handleColor || props.color,
       };
     });
 
@@ -487,7 +488,7 @@ export default defineComponent({
     width: var(--height, 6px);
     height: var(--height, 6px);
     border-radius: calc(var(--height, 6px) / 2);
-    background-color: var(--color, #fb2727);
+    background-color: var(--handle-color, #fb2727);
     transform: scale(0);
     transition: transform 0.2s ease;
     user-select: none;

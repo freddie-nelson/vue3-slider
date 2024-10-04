@@ -4,6 +4,7 @@ export type Props = Readonly<{
   width: string;
   height: number;
   handleScale: number;
+  handleColor?: string;
   alwaysShowHandle: boolean;
   color: string;
   trackColor: string;
@@ -42,6 +43,10 @@ export default {
   handleScale: {
     type: Number,
     default: 1.35,
+  },
+  handleColor: {
+    type: String,
+    default: undefined,
   },
   alwaysShowHandle: {
     type: Boolean,
