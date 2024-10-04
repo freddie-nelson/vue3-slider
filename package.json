@@ -1,6 +1,6 @@
 {
   "name": "vue3-slider",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "author": "Freddie Nelson <freddie0208@hotmail.com> (https://freddienelson.co.uk)",
   "description": "A modern, customizable slider built entirely in Vue.js 3 with TypeScript in under 5KB (gzipped) and dependency free. (horizontal, vertical and circular slider)",
   "keywords": [
