@@ -41,6 +41,18 @@ export default function(store: Store, props: Props, emit: SetupContext["emit"]) 
     // get between min and max
     roundedVal = roundedVal + props.min;
 
+    // apply custom steps
+    if (props.customSliderSteps) {
+      let closestStep = props.customSliderSteps[0];
+      for (const step of props.customSliderSteps) {
+        if (Math.abs(roundedVal - step) < Math.abs(roundedVal - closestStep)) {
+          closestStep = step;
+        }
+      }
+
+      roundedVal = closestStep;
+    }
+
     // apply limit
     if (props.limit !== undefined) roundedVal = Math.min(roundedVal, props.limit);
 

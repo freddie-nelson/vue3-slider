@@ -32,7 +32,17 @@ export default defineComponent({
       alwaysShowTooltip: false,
       alwaysShowHandle: false,
       flipTooltip: false,
+      customSliderStepsText: "",
     };
+  },
+  computed: {
+    customSliderSteps(): number[] | undefined {
+      if (this.customSliderStepsText) {
+        return this.customSliderStepsText.split(",").map((step: string) => Number(step.trim()));
+      }
+
+      return undefined;
+    },
   },
   methods: {
     openControls() {
@@ -215,11 +225,7 @@ export default defineComponent({
 
       <div class="item">
         <h2>alwaysShowTooltip:</h2>
-        <input
-          type="checkbox"
-          name="alwaysShowTooltip"
-          v-model="alwaysShowTooltip"
-        />
+        <input type="checkbox" name="alwaysShowTooltip" v-model="alwaysShowTooltip" />
       </div>
 
       <div class="item">
@@ -229,11 +235,7 @@ export default defineComponent({
 
       <div class="item">
         <h2>alwaysShowHandle:</h2>
-        <input
-          type="checkbox"
-          name="alwaysShowHandle"
-          v-model="alwaysShowHandle"
-        />
+        <input type="checkbox" name="alwaysShowHandle" v-model="alwaysShowHandle" />
       </div>
 
       <div class="item">
@@ -270,6 +272,11 @@ export default defineComponent({
         <input type="checkbox" name="disabled" v-model="disabled" />
       </div>
 
+      <div class="item">
+        <h2>custom slider steps:</h2>
+        <input type="text" name="customSliderStepsText" v-model="customSliderStepsText" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -302,6 +309,7 @@ export default defineComponent({
     :circleOffset="circleOffset"
     :circleGap="circleGap"
     :disabled="disabled"
+    :customSliderSteps="customSliderSteps"
   />
   <h1>{{ sliderVal }}</h1>
 </template>
@@ -350,6 +358,7 @@ h1 {
 .controls.expand .inputs {
   height: 770px;
   opacity: 1;
+  overflow-y: scroll;
 }
 
 .controls .inputs {

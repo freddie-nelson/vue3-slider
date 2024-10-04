@@ -25,6 +25,7 @@ export type Props = Readonly<{
   circleOffset: number;
   circleGap: number;
   disabled: boolean;
+  customSliderSteps?: number[];
 }>;
 
 export default {
@@ -166,5 +167,9 @@ export default {
   disabled: {
     type: Boolean,
     default: false,
+  },
+  customSliderSteps: {
+    type: Array as () => number[] | undefined,
+    default: undefined,
   },
 };
