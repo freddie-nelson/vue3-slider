@@ -26,6 +26,7 @@ export type Props = Readonly<{
   circleGap: number;
   disabled: boolean;
   customSliderSteps?: number[];
+  tooltipStyles: Record<string, any>;
 }>;
 
 export default {
@@ -125,6 +126,10 @@ export default {
   flipTooltip: {
     type: Boolean,
     default: false,
+  },
+  tooltipStyles: {
+    type: Object,
+    default: () => ({}),
   },
   orientation: {
     type: String,

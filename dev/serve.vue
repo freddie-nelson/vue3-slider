@@ -33,6 +33,7 @@ export default defineComponent({
       alwaysShowHandle: false,
       flipTooltip: false,
       customSliderStepsText: "",
+      tooltipStylesText: "{}",
     };
   },
   computed: {
@@ -42,6 +43,17 @@ export default defineComponent({
       }
 
       return undefined;
+    },
+    tooltipStyles(): Record<string, string> {
+      if (this.tooltipStylesText) {
+        try {
+          return JSON.parse(this.tooltipStylesText);
+        } catch (error) {
+          return {};
+        }
+      }
+
+      return {};
     },
   },
   methods: {
@@ -277,6 +289,11 @@ export default defineComponent({
         <input type="text" name="customSliderStepsText" v-model="customSliderStepsText" />
       </div>
 
+      <div class="item">
+        <h2>tooltip styles text:</h2>
+        <input type="text" name="tooltipStylesText" v-model="tooltipStylesText" />
+      </div>
+
       <button @click="sliderVal += 10">Add 10 to slider value</button>
       <button @click="sliderVal -= 10">Minus 10 from slider value</button>
     </div>
@@ -310,6 +327,7 @@ export default defineComponent({
     :circleGap="circleGap"
     :disabled="disabled"
     :customSliderSteps="customSliderSteps"
+    :tooltipStyles="tooltipStyles"
   />
   <h1>{{ sliderVal }}</h1>
 </template>

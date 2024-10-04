@@ -30,22 +30,9 @@ export default defineComponent({
     const store = useStore(props);
 
     // setup hooks
-    const { updateModelValue, formatModelValue } = useModelValue(
-      store,
-      props,
-      emit
-    );
-    const { handleKeydown } = useKeyBoardControls(
-      store,
-      props,
-      updateModelValue
-    );
-    const { clickHandler } = useDragHandler(
-      store,
-      props,
-      emit,
-      updateModelValue
-    );
+    const { updateModelValue, formatModelValue } = useModelValue(store, props, emit);
+    const { handleKeydown } = useKeyBoardControls(store, props, updateModelValue);
+    const { clickHandler } = useDragHandler(store, props, emit, updateModelValue);
 
     // Apply hover styles to handle
     const hovering = ref(false);
@@ -69,18 +56,13 @@ export default defineComponent({
 
       // if format function is provided then use that
       // else just convert raw value to string
-      if (
-        props.formatTooltip !== null &&
-        typeof props.formatTooltip === "function"
-      ) {
+      if (props.formatTooltip !== null && typeof props.formatTooltip === "function") {
         stringValue = props.formatTooltip(
-          store.formattedSliderValue.value ||
-            formatModelValue(store.modelValueUnrounded.value)
+          store.formattedSliderValue.value || formatModelValue(store.modelValueUnrounded.value)
         );
       } else {
         stringValue = (
-          store.formattedSliderValue.value ||
-          formatModelValue(store.modelValueUnrounded.value)
+          store.formattedSliderValue.value || formatModelValue(store.modelValueUnrounded.value)
         ).toString();
       }
 
@@ -128,16 +110,17 @@ export default defineComponent({
     const trackStrokeOffset = computed(() => {
       if (props.orientation !== "circular") return 0;
 
-      return props.circleGap / 360 * circumference.value;
+      return (props.circleGap / 360) * circumference.value;
     });
 
     const strokeOffset = computed(() => {
       if (props.orientation !== "circular") return 0;
 
-      return circumference.value - (
-        (store.modelValueUnrounded.value / store.sliderRange.value) * 
-        (circumference.value) * 
-        (1 - props.circleGap / 360)
+      return (
+        circumference.value -
+        (store.modelValueUnrounded.value / store.sliderRange.value) *
+          circumference.value *
+          (1 - props.circleGap / 360)
       );
     });
 
@@ -204,14 +187,9 @@ export default defineComponent({
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="
-          (showTooltip && !disabled && (hovering || holding)) ||
-          alwaysShowTooltip
-        "
+        v-show="(showTooltip && !disabled && (hovering || holding)) || alwaysShowTooltip"
         :style="{
-          transform: flip
-            ? `translate(${-tooltipOffset}px)`
-            : `translate(${tooltipOffset}px)`,
+          transform: flip ? `translate(${-tooltipOffset}px)` : `translate(${tooltipOffset}px)`,
           right: flip ? '0px' : undefined,
           left: flip ? 'auto' : undefined,
           '--tooltip-margin': `max(calc(var(--height, 6px) + 12px), calc(var(--height, 6px) * ${
@@ -219,6 +197,7 @@ export default defineComponent({
           }))`,
           bottom: flipTooltip ? 'unset' : 'var(--tooltip-margin)',
           top: flipTooltip ? 'var(--tooltip-margin)' : 'unset',
+          ...tooltipStyles,
         }"
       >
         {{ tooltipText }}
@@ -261,14 +240,9 @@ export default defineComponent({
       <div
         class="tooltip"
         ref="tooltip"
-        v-show="
-          (showTooltip && !disabled && (hovering || holding)) ||
-          alwaysShowTooltip
-        "
+        v-show="(showTooltip && !disabled && (hovering || holding)) || alwaysShowTooltip"
         :style="{
-          transform: flip
-            ? `translateY(${tooltipOffset}px)`
-            : `translateY(${-tooltipOffset}px)`,
+          transform: flip ? `translateY(${tooltipOffset}px)` : `translateY(${-tooltipOffset}px)`,
           top: flip ? '0px' : undefined,
           bottom: flip ? 'auto' : undefined,
           '--tooltip-margin': `max(calc(var(--height, 6px) + 14px), calc(var(--height, 6px) * ${
@@ -276,6 +250,7 @@ export default defineComponent({
           }))`,
           left: flipTooltip ? 'unset' : 'var(--tooltip-margin)',
           right: flipTooltip ? 'var(--tooltip-margin)' : 'unset',
+          ...tooltipStyles,
         }"
       >
         {{ tooltipText }}
@@ -314,17 +289,10 @@ export default defineComponent({
     @keydown="!disabled ? handleKeydown($event) : null"
     :disabled="disabled ? '' : undefined"
   >
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 100 100"
-      style="overflow: visible"
-    >
+    <svg width="100%" height="100%" viewBox="0 0 100 100" style="overflow: visible">
       <circle
         :style="{
-          transform: `rotate(${-90 + circleOffset}deg) ${
-            flip ? 'scaleY(-1)' : ''
-          }`,
+          transform: `rotate(${-90 + circleOffset}deg) ${flip ? 'scaleY(-1)' : ''}`,
         }"
         style="transform-origin: center"
         stroke="var(--track-color)"
@@ -341,9 +309,7 @@ export default defineComponent({
 
       <circle
         :style="{
-          transform: `rotate(${-90 + circleOffset}deg) ${
-            flip ? 'scaleY(-1)' : ''
-          }`,
+          transform: `rotate(${-90 + circleOffset}deg) ${flip ? 'scaleY(-1)' : ''}`,
         }"
         style="transform-origin: center"
         stroke="var(--color)"
@@ -358,40 +324,25 @@ export default defineComponent({
       ></circle>
     </svg>
 
-    <div
-      class="handle-container"
-      :style="{ transform: `rotate(${circleOffset}deg)` }"
-    >
+    <div class="handle-container" :style="{ transform: `rotate(${circleOffset}deg)` }">
       <div class="handle round-end" />
     </div>
 
-    <div
-      class="handle-container"
-      :style="{ transform: `rotate(${sliderValueDegrees + circleOffset}deg)` }"
-    >
-      <div
-        class="handle"
-        :class="{ hover: applyHandleHoverClass && !disabled }"
-      />
+    <div class="handle-container" :style="{ transform: `rotate(${sliderValueDegrees + circleOffset}deg)` }">
+      <div class="handle" :class="{ hover: applyHandleHoverClass && !disabled }" />
 
       <transition name="fade">
         <div
           class="tooltip"
           ref="tooltip"
-          v-show="
-            (showTooltip && !disabled && (hovering || holding)) ||
-            alwaysShowTooltip
-          "
+          v-show="(showTooltip && !disabled && (hovering || holding)) || alwaysShowTooltip"
           :style="{
             transform: `rotate(${-sliderValueDegrees - circleOffset}deg)`,
             '--tooltip-margin': `calc(max(calc(${tooltipOffset}px + 34px), calc(${tooltipOffset}px + var(--height) * ${
-              applyHandleHoverClass
-                ? 'calc(var(--handle-scale, 1.35) * 0.9)'
-                : 1.35
+              applyHandleHoverClass ? 'calc(var(--handle-scale, 1.35) * 0.9)' : 1.35
             })) * -1)`,
-            top: flipTooltip
-              ? 'calc(var(--tooltip-margin) * -0.7)'
-              : 'var(--tooltip-margin)',
+            top: flipTooltip ? 'calc(var(--tooltip-margin) * -0.7)' : 'var(--tooltip-margin)',
+            ...tooltipStyles,
           }"
         >
           {{ tooltipText }}
