@@ -138,6 +138,14 @@ npm run serve
 yarn serve
 ```
 
+### Tests
+
+Run the drag release tests:
+
+```bash
+npm run test:unit
+```
+
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)

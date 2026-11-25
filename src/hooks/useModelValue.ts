@@ -43,20 +43,21 @@ export default function(store: Store, props: Props, emit: SetupContext["emit"]) 
 
     // apply custom steps
     if (props.customSliderSteps) {
-      let closestStep = props.customSliderSteps[0];
-      for (const step of props.customSliderSteps) {
+      const steps = props.customSliderSteps.filter((step) => step >= props.min && step <= props.max);
+      let closestStep = steps[0];
+      for (const step of steps) {
         if (Math.abs(roundedVal - step) < Math.abs(roundedVal - closestStep)) {
           closestStep = step;
         }
       }
 
-      roundedVal = closestStep;
+      if (closestStep !== undefined) roundedVal = closestStep;
     }
 
     // apply limit
     if (props.limit !== undefined) roundedVal = Math.min(roundedVal, props.limit);
 
-    return roundedVal;
+    return Math.min(props.max, Math.max(props.min, roundedVal));
   };
 
   // update model value and related refs
