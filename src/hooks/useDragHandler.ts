@@ -128,6 +128,10 @@ export default function(
       window.removeEventListener("touchmove", draggingHandler);
     }
 
+    const value = store.formattedSliderValue.value;
+    const clamped = Math.min(props.max, Math.max(props.min, value));
+    if (value !== clamped) updateModelValue(clamped - props.min);
+
     emit("drag-end", store.formattedSliderValue.value, e);
   };
   // ------------------------------------------------------------------------

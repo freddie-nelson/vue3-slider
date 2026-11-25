@@ -43,7 +43,8 @@
     "serve": "vue-cli-service serve dev/serve.ts",
     "serve:prod": "vue-cli-service serve dev-production-build/serve.ts",
     "build": "vue-cli-service build --mode production --target lib --name vue3-slider src/entry.ts",
-    "build:demo": "vue-cli-service build dev/serve.ts --dest demo && node fixDemoHtml.js"
+    "build:demo": "vue-cli-service build dev/serve.ts --dest demo && node fixDemoHtml.js",
+    "test:unit": "node tests/bounds.cjs"
   },
   "dependencies": {},
   "devDependencies": {
